@@ -1,0 +1,63 @@
+color original
+.layout-navbar-fixed .wrapper .sidebar-dark-primary .brand-link:not([class*=navbar]) {
+	background-color: #343a40
+}
+
+ 
+
+12468
+[class*=sidebar-dark-] .nav-sidebar>.nav-item.menu-open>.nav-link,
+[class*=sidebar-dark-] .nav-sidebar>.nav-item:hover>.nav-link,
+[class*=sidebar-dark-] .nav-sidebar>.nav-item>.nav-link:focus {
+	background-color: rgba(255, 255, 255, .1);
+	color: #fff
+}
+12503
+[class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link:focus,
+[class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link:hover {
+	background-color: rgba(255, 255, 255, .1);
+	color: #fff
+}
+
+[class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link.active,
+[class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link.active:focus,
+[class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link.active:hover {
+	background-color: rgba(255, 255, 255, .9);
+	color: #2f4050
+}
+
+30333
+
+.bg-gradient-gray-dark.btn:hover {
+	background: #23272b linear-gradient(180deg, #44474b, #23272b) repeat-x!important
+}
+	  
+	673E2E  A4431F
+14228
+.navbar-info {
+	background-color: #17a2b8
+}
+
+
+14304
+.navbar-white {
+	background-color: #fff
+}
+
+12099
+[class*=sidebar-dark] .brand-link {
+	border-bottom: 1px solid #4b545c;
+	color: rgba(255, 255, 255, .8)
+	color: #212529
+}
+
+12045
+.navbar-light .btn-navbar,
+.navbar-light .form-control-navbar {
+	background-color: #f2f4f6;
+	border: 0
+}
+5133 añado
+.card-footer-nobg {
+	padding: .75rem 1.25rem;
+}

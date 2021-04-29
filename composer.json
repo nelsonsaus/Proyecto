@@ -1,0 +1,25 @@
+{
+    "name": "usuario/nombre",
+    "description": "Descripcion",
+    "type": "project",
+    "license": "GNU/GPL",
+    "authors": [
+        {
+            "name": "usuario",
+            "email": "usuario@correo.es"
+        }
+    ],
+    "config" :{
+        "optimize-autoloader": true
+    },
+    "autoload":{
+        "psr-4": {
+            "Clases\\": "clases"
+        }
+    },
+    "require": {
+        "twbs/bootstrap": "^4.5",
+        "fortawesome/font-awesome": "^5.15",
+        "fzaninotto/faker": "^1.9"
+    }
+}
