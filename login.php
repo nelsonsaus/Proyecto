@@ -1,4 +1,34 @@
 <!DOCTYPE html>
+<?php
+session_start();
+$_SESSION['user'] = "a";
+$_SESSION['access'] = 1;
+ 
+include("authenticate.php");
+ 
+// check to see if user is logging out
+if(isset($_GET['out'])) {
+	// destroy session
+	session_unset();
+	$_SESSION = array();
+	unset($_SESSION['user'],$_SESSION['access']);
+	session_destroy();
+}
+ 
+// check to see if login form has been submitted
+if(isset($_POST['userLogin'])){
+	// run information through authenticator
+	if(authenticate($_POST['userLogin'],$_POST['userPassword']))
+	{
+		// authentication passed
+		header("Location: index.php");
+		die();
+	} else {
+		// authentication failed
+		$error = 1;
+	}
+}
+?>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
