@@ -1,6 +1,5 @@
 <?php
-use Clases\ControladorBase;
-use Clases\CondicionFiltro;
+
    if (!isset($_COOKIE["PHPSESSID"]))  session_start(); 
    require_once "comun/Formatter.php";
    class ProgramaPeriodoController extends ControladorBase{
@@ -21,25 +20,6 @@ use Clases\CondicionFiltro;
 
 
 
-           if($programaperiodo->getAllCount()==0){
-                $allperiodos=$cuatrimestre->getAll("nombre","ASC",20,-1);
-                $arrperiodos = array();
-                foreach($allperiodos as $per){
-                    array_push($arrperiodos, $per->id);
-                }
-
-
-                $allprogramas = $programa->getAll("nif", "ASC", 20, -1);
-                $arrprogramas = array();
-                foreach($allprogramas as $programa){
-                    array_push($arrprogramas, $programa->id);
-                }
-
-
-
-                $programaperiodo->rellenar(10, $arrperiodos, $arrprogramas);
-           }
-
 
            //Conseguimos todos los cuatrimestres de la pagina
    
@@ -56,7 +36,7 @@ use Clases\CondicionFiltro;
    			    // Mostramos el periodo seleccionado en el select // 
    				$ultimoperiodo=$cuatrimestre->getById($_REQUEST["filtro_periodo"],"id");
    				$filtro_programa=array(
-                                 'cuatrimestre.id'=>new CondicionFiltro(CondicionFiltro::Igual,$_REQUEST["filtro_periodo"]) ,
+                                 'cuatrimestre.id'=>new CondicionFiltro(CondicionFiltro::Igual,$_REQUEST["mcprograma"]) ,
                                  );
    			//	$term=$programaperiodo->getById($_REQUEST["filtro_periodo"],"id");			  
            } else  {
@@ -67,6 +47,7 @@ use Clases\CondicionFiltro;
                                  );
    			//	$term=$programaperiodo->getById($ultimoperiodo->id,"id");	
    		}
+
    
        
    	    // Usado para el mostrar los periodos en el select //   
@@ -83,14 +64,20 @@ use Clases\CondicionFiltro;
            
    		
    			$id=1;
-		if (isset($_REQUEST["volvercontroller"])) {
-               $volver=array("controller" => $_REQUEST["volvercontroller"],
-                            "action" => $_REQUEST["volveraction"],
-							"clave" => $_REQUEST["volverclave"],
-                            "valor" => $_REQUEST["volvervalor"]
-                           );
-        }
-        else {
+
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                         "action" => $_REQUEST["volveraction"],
+                         "clave" => "id",
+                        "valor" => $id
+                        );
+        }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                         "action" => $_REQUEST["volveraction"],
+                         "clave" => $_REQUEST["volverclave"],
+                         "valor" => $_REQUEST["volvervalor"]
+                        );
+        }else {
                $volver=array("controller" => "cuatrimestre",
                             "action" => "index",
                             "clave" => "id",
@@ -119,21 +106,26 @@ use Clases\CondicionFiltro;
    		$cuatrimestre=new Cuatrimestre();
    		$programaperiodo=new ProgramaPeriodo();
    		
-   		
-           if (isset($_REQUEST["volvercontroller"])) {
-                  $volver=array("controller" => $_REQUEST["volvercontroller"],
-                                "action" => $_REQUEST["volveraction"],
-                                "clave" => $_REQUEST["volverclave"],
-                                "valor" => $_REQUEST["volvervalor"]
-                              );
-           }
-           else {
-                  $volver=array("controller" => $_REQUEST["controller"],
+           if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                         "action" => $_REQUEST["volveraction"],
+                         "clave" => "id",
+                        "valor" => $_REQUEST["id"]
+                        );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                $volver=array("controller" => $_REQUEST["volvercontroller"],
+                            "action" => $_REQUEST["volveraction"],
+                            "clave" => $_REQUEST["volverclave"],
+                            "valor" => $_REQUEST["volvervalor"]
+                            );
+            }else {
+                $volver=array("controller" => $_REQUEST["controller"],
                                 "action" => "editar",
                                 "clave" => "id",
                                 "valor" => $_REQUEST["id"]
-                              );
-           }
+                            );
+            }
+
    		//
    		 $allcuatrimestres=$cuatrimestre->getAll("id","DESC",20,-1);
    		//$alltrabajadores=$trabajador->getAll("nif","DESC",20,-1);
@@ -161,25 +153,37 @@ use Clases\CondicionFiltro;
                $programaperiodo=new ProgramaPeriodo();
 			   
                $programaperiodo->setId($_REQUEST["mid"]);
+               $idprogper=$programaperiodo->getById($_REQUEST["mid"], "id");
                $programaperiodo->setId_periodo($_REQUEST["mperiodoid"]);
-   			   $programaperiodo->setId_programa($_REQUEST["mprograma"]);
+               //LO COJO ASI EL ID DEL PROGRAMA PORQUE SI PONGO CON EL REQUEST MPROGRAM DA PROBLEMAS. DE ESTA FORMA NO HAY PROBLEMAS.
+   			   $programaperiodo->setId_programa($idprogper->id_programa);
                $programaperiodo->setPresupuesto(($_REQUEST["mpresupuesto"]!='')?$formatter->formatterDecimal->parse($_REQUEST["mpresupuesto"]):null);
 
                $save=$programaperiodo->updateById();
            }
-           if (isset($_REQUEST["volvercontroller"])) {
-                 $volver=array("controller" => $_REQUEST["volvercontroller"],
-                 "action" => $_REQUEST["volveraction"],
-                 "clave" => $_REQUEST["volverclave"],
-                 "valor" => $_REQUEST["volvervalor"]
-                      );
-           }
-           else {
+
+           if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                         "action" => $_REQUEST["volveraction"]
+                        );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                $volver=array("controller" => $_REQUEST["volvercontroller"],
+                            "action" => $_REQUEST["volveraction"],
+                            "clave" => $_REQUEST["volverclave"],
+                            "valor" => $_REQUEST["volvervalor"]
+                            );
+            }else {
                 $volver=array("controller" => $_REQUEST["controller"],
-                "action" => "index"
-                 );
-           }
-         $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
+                                    "action" => "index"
+
+                            );
+            }
+           
+           if($volver["clave"]!=null){
+            $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
+         }else{
+            $this->redirect($volver["controller"],$volver["action"]);
+         }
    
        }
    
@@ -194,22 +198,33 @@ use Clases\CondicionFiltro;
            }
  
  
-            if (isset($_REQUEST["volvercontroller"])) {
-                  $volver=array("controller" => $_REQUEST["volvercontroller"],
-                       "action" => $_REQUEST["volveraction"],
-                       "clave" => $_REQUEST["volverclave"],
-                       "valor" => $_REQUEST["volvervalor"]
+           if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                         "action" => $_REQUEST["volveraction"],
+                         "clave" => "",
+                        "valor" => ""
                         );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                $volver=array("controller" => $_REQUEST["volvercontroller"],
+                            "action" => $_REQUEST["volveraction"],
+                            "clave" => $_REQUEST["volverclave"],
+                            "valor" => $_REQUEST["volvervalor"]
+                            );
+            }else {
+                $volver=array("controller" => "cuatrimestre",
+                            "action" => "index",
+                            "clave" => "",
+                            "valor" => ""
+                            );
             }
-            else {
-                   $volver=array("controller" => "cuatrimestre",
-                   "action" => "index",
-				   "clave" => "",
-                   "valor" => ""
-                    );
-          }
+
+
    
-         $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
+          if($volver["clave"]!=null){
+            $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
+         }else{
+            $this->redirect($volver["controller"],$volver["action"]);
+         }
        }
    
        public function crearPrograma(){
@@ -224,22 +239,29 @@ use Clases\CondicionFiltro;
                $programaperiodo->setPresupuesto(($_REQUEST["mcpresupuesto"]!='')?$formatter->formatterDecimal->parse($_REQUEST["mcpresupuesto"]):null);
                $id=$programaperiodo->save();
            }
-           if (isset($_REQUEST["volvercontroller"])) {
-                 $volver=array("controller" => $_REQUEST["volvercontroller"],
-                 "action" => $_REQUEST["volveraction"],
-                 "clave" => $_REQUEST["volverclave"],
-                 "valor" => $_REQUEST["volvervalor"]
-                      );
-           }
-           else {
-                $volver=array("controller" => $_REQUEST["controller"],
-                "action" => "index",
-                 "clave" => "id",
-                 "valor" => $id
-                 );
-           }
 
-             $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
+           if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                         "action" => $_REQUEST["volveraction"]
+                        );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                $volver=array("controller" => $_REQUEST["volvercontroller"],
+                            "action" => $_REQUEST["volveraction"],
+                            "clave" => $_REQUEST["volverclave"],
+                            "valor" => $_REQUEST["volvervalor"]
+                            );
+            }else {
+                $volver=array("controller" => $_REQUEST["controller"],
+                                "action" => "index"
+                            );
+            }
+
+
+           if($volver["clave"]!=null){
+            $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
+         }else{
+            $this->redirect($volver["controller"],$volver["action"]);
+         }
    
        }
         
@@ -254,21 +276,23 @@ use Clases\CondicionFiltro;
    		$productividad=new Productividad();
    		$trabajador=new Trabajador();
    		
-              
-   		if (isset($_REQUEST["volvercontroller"])) {
-                  $volver=array("controller" => $_REQUEST["volvercontroller"],
-                       "action" => $_REQUEST["volveraction"],
-                       "clave" => $_REQUEST["volverclave"],
-                       "valor" => $_REQUEST["volvervalor"]
+           if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                         "action" => $_REQUEST["volveraction"]
                         );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                $volver=array("controller" => $_REQUEST["volvercontroller"],
+                            "action" => $_REQUEST["volveraction"],
+                            "clave" => $_REQUEST["volverclave"],
+                            "valor" => $_REQUEST["volvervalor"]
+                            );
+            }else {
+                $volver=array("controller" => $_REQUEST["controller"],
+                                "action" => "index"
+                            );
             }
-   		 
-            else {
-   			 
-                   $volver=array("controller" => $_REQUEST["controller"],
-                   "action" => "index"
-                    );
-          }
+        
+
    	   echo "_._".$_REQUEST["id"]."_._<br\>";
    	
    		$condicion= new CondicionFiltro(0,$_REQUEST["id"],NULL);	   
@@ -307,7 +331,11 @@ use Clases\CondicionFiltro;
    			$productividad->updateById();
    		}	
    
-   	$this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
+           if($volver["clave"]!=null){
+            $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
+         }else{
+            $this->redirect($volver["controller"],$volver["action"]);
+         }
    	
    	
        }

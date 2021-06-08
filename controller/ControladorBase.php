@@ -1,11 +1,7 @@
 <?php
-
-namespace Clases;
-
-use PDO;
-use PDOException;
-
- if (!isset($_COOKIE["PHPSESSID"]))  session_start(); 
+if(!isset($_SESSION)) { 
+    session_start(); 
+} 
 
 class ControladorBase{
  

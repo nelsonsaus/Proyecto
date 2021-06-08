@@ -12,7 +12,7 @@
                            <form  class="form-horizontal" id="formulario" action="<?php echo $helper->url("programaperiodo","actualizarPrograma"); ?>&volvercontroller=<?php echo $volver["controller"] ?>&volveraction=<?php echo $volver["action"]?>" method="post" class="col-lg-5">
                               <input type="hidden" id="mid" name="mid" />
                               <input type="hidden" id="mperiodoid" name="mperiodoid" class="form-control" value="<?php echo $program->prog_periodoid; ?>" >
-                              <input type="hidden" id="mprograma" name="mprograma" class="form-control" value="<?php echo $program->prog_id; ?>"  >
+                              <input type="hidden" id="mprograma" name="mprograma" class="form-control" value="<?php echo $program->prog_id; ?>" >
                                <div class="form-group">
                                     <label>Período:</label>
                                     <div class="input-group">
@@ -28,7 +28,7 @@
                                     <label>Programa:</label>
                                     <div class="input-group">
                                        <div class="col-sm-8">
-                                    <input   id="mnombre" name="mnombre" class="form-control"  disabled>
+                                    <input id="mnombre" name="mnombre" class="form-control" disabled>
                                        </div>
                                     </div>
                                     <!-- /.input group -->
@@ -54,7 +54,6 @@
                         <form action="<?php echo $helper->url("cuatrimestre","index"); ?>" method="post" class="col-lg-5">
                         <input type="hidden" name="controller" value="<?php echo $volver["controller"]?>"> 
                         <input type="hidden" name="action" value="<?php echo $volver["action"]?>"> 
-                        <input type="hidden" name="<?php echo $volver["clave"]?>" value="<?php echo $ultimoperiodo->id; ?>"> 
                         </form>
                         </div>
                      </div>
@@ -129,8 +128,7 @@
                               </form>
                               <form action="<?php echo $helper->url("cuatrimestre","index"); ?>" method="post" class="col-lg-5">
                               <input type="hidden" name="controller" value="<?php echo $volver["controller"]?>"> 
-                              <input type="hidden" name="action" value="<?php echo $volver["action"]?>"> 
-                              <input type="hidden" name="<?php echo $volver["clave"]?>" value="<?php echo $ultimoperiodo->id; ?>"> 
+                              <input type="hidden" name="action" value="<?php echo $volver["action"]?>">
                               </form>
                               </div>
                              

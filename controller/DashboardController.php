@@ -1,5 +1,4 @@
 <?php
-use Clases\ControladorBase;
 require_once "comun/Formatter.php";
 class DashboardController extends ControladorBase{
 
@@ -13,6 +12,50 @@ class DashboardController extends ControladorBase{
          
         //Creamos el objeto programa
         $programa=new Programa();
+        $cuatrimestre = new Cuatrimestre();
+        $productividad = new Productividad();
+        $conversaciones = new Conversaciones();
+
+        $totalmensajes = $conversaciones->NoLeidos($_SESSION["id"]);
+
+        $ultimo = $cuatrimestre->getUltimoCerrado();
+
+        $ultimoabierto = $cuatrimestre->getUltimoAbierto();
+
+
+
+
+
+
+        $filtro=array(
+            'id_periodo'=>new CondicionFiltro(CondicionFiltro::Igual,$ultimo[0]->id)
+            );
+        
+        
+        
+        $filteredproductivitys=$productividad->getAllProd("id","ASC",20,-1,$filtro);
+
+
+
+        $trabajadorestotal = 0;
+
+        $trabajadorestotal = $productividad->getAllCountProd($filtro);
+
+ 
+
+
+        $importes = 0;
+        $ausencia=0;
+
+        foreach($filteredproductivitys as $prod){
+            $importes+=$prod->importe;
+            if($prod->dias_trabajados!=120){
+                $diferencia = 120 - $prod->dias_trabajados;
+                $ausencia+=$diferencia;
+            }
+        }
+
+
          
         //Conseguimos todos los programas de la pagina
 
@@ -39,7 +82,12 @@ class DashboardController extends ControladorBase{
 		
         //Cargamos la vista index y le pasamos valores
         $this->cargarVista("dashboard/index",array(
-			"volver"=>$volver
+			"volver"=>$volver,
+            "importes"=>$importes,
+            "trabajadores"=>$trabajadorestotal,
+            "ausencia" => $ausencia,
+            "ultimoabierto" => $ultimoabierto,
+            "totalmensajes" => $totalmensajes
 			
         ));
 	

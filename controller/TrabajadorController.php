@@ -1,8 +1,5 @@
 <?php
 
-use Clases\ControladorBase;
-use Clases\CondicionFiltro;
-
 require_once "comun/Formatter.php";
 class TrabajadorController extends ControladorBase{
 
@@ -19,6 +16,9 @@ class TrabajadorController extends ControladorBase{
 		$productividad=new Productividad(); 
         $servicio=new Servicio(); 
 		$trabajadoresservicios= new TrabajadoresServicios();
+        $conversaciones = new Conversaciones();
+
+        $totalmensajes = $conversaciones->NoLeidos($_SESSION["id"]);
         //Conseguimos todos los trabajadors de la pagina
 
         $page=1;
@@ -109,7 +109,8 @@ class TrabajadorController extends ControladorBase{
             "pagelimit"=>$trabajador->pagelimit,
             'activos' => $activos,
             'noactivos' => $noactivos,
-            'todos' => $todos
+            'todos' => $todos,
+            "totalmensajes" => $totalmensajes
         ));
     }
 
@@ -121,19 +122,28 @@ class TrabajadorController extends ControladorBase{
         $productividad=new Productividad();	
         $puestos = new Puesto();	
 		$trabajadoresservicios= new TrabajadoresServicios();
-        if (isset($_REQUEST["volvercontroller"])) {
-               $volver=array("controller" => $_REQUEST["volvercontroller"],
-                             "action" => $_REQUEST["volveraction"],
-                             "clave" => $_REQUEST["volverclave"],
-                             "valor" => $_REQUEST["volvervalor"]
-                           );
-        }
-        else {
-               $volver=array("controller" => $_REQUEST["controller"],
-                             "action" => "editar",
-                             "clave" => "nif",
-                             "valor" => $_REQUEST['nif']
-                           );
+        $conversaciones = new Conversaciones();
+
+        $totalmensajes = $conversaciones->NoLeidos($_SESSION["id"]);
+        
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"],
+                        "clave" => "nif",
+                        "valor" => $_REQUEST['nif']
+                            );
+        }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                        "action" => $_REQUEST["volveraction"],
+                                        "clave" => $_REQUEST["volverclave"],
+                                        "valor" => $_REQUEST["volvervalor"]
+                                        );
+        }else {
+            $volver=array("controller" => $_REQUEST["controller"],
+            "action" => "editar",
+            "clave" => "nif",
+            "valor" => $_REQUEST['nif']
+          );
         }
 
 
@@ -176,8 +186,21 @@ class TrabajadorController extends ControladorBase{
 
             $id_serv_eval = $trabajadoresservicios->getServEval($_REQUEST["nif"]);
 
+
             $serv_eval=$servicio->getById($id_serv_eval,"id");
-		    $serv_eval=$serv_eval->nombre;
+            if($serv_eval==NULL){
+                $serv_eval="";
+            }else{
+                $serv_eval=$serv_eval->nombre;
+            }
+
+            
+            foreach($vidalaboral as $elemento){
+                $nombre_serveval = $servicio->getById($elemento->id_servicio_evalua, "id");
+                $nombre_serveval = $nombre_serveval->nombre;
+                
+                $elemento->nombre_serveval=$nombre_serveval;
+            }
 
 
                $this->cargarVista("trabajador/single",array(
@@ -192,29 +215,39 @@ class TrabajadorController extends ControladorBase{
 				 "vidalaboral"=>$vidalaboral,
 				 "count"=>$count,					 
                  "volver"=>$volver,				 
-                    "operacion"=>"editar"
+                    "operacion"=>"editar",
+                    "totalmensajes" => $totalmensajes
 
         ));
     }
     public function nuevo() {
+        
+        
         $trabajador=new Trabajador();
         $servicio=new Servicio();
         $puesto = new Puesto();
 		$centro=new Centro();
+        $conversaciones = new Conversaciones();
+
+        $totalmensajes = $conversaciones->NoLeidos($_SESSION["id"]);
 
        // $trabajador=new Trabajador();
-        if (isset($_REQUEST["volvercontroller"])) {
-               $volver=array("controller" => $_REQUEST["volvercontroller"],
-                             "action" => $_REQUEST["volveraction"],
-                             "clave" => $_REQUEST["volverclave"],
-                             "valor" => $_REQUEST["volvervalor"]
-                           );
+       if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+        $volver=array("controller" => $_REQUEST["volvercontroller"],
+                    "action" => $_REQUEST["volveraction"]
+                        );
+        }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                        "action" => $_REQUEST["volveraction"],
+                                        "clave" => $_REQUEST["volverclave"],
+                                        "valor" => $_REQUEST["volvervalor"]
+                                        );
+        }else {
+            $volver=array("controller" => $_REQUEST["controller"],
+                                "action" => "index"
+                            );
         }
-        else {
-               $volver=array("controller" => $_REQUEST["controller"],
-                             "action" => "index"
-                           );
-       }
+
 	   	$server=$servicio->getAll("nombre","DESC",20,-1);
         $allservers=$servicio->getAll("id","DESC",20,-1);
         $allpuestos = $puesto->getAll('id',"ASC",20,-1);
@@ -226,7 +259,8 @@ class TrabajadorController extends ControladorBase{
                  "allpuestos"=>$allpuestos,
 				 "allcentros"=>$allcentros,
  				 "destino"=>"productividad",
-                 "operacion"=>"nuevo"
+                 "operacion"=>"nuevo",
+                 "totalmensajes" => $totalmensajes
         ));
     }
   //////////////////////////////////////////////////////////////////////////////////
@@ -236,6 +270,10 @@ class TrabajadorController extends ControladorBase{
     public function actualizar() {
  
         if(isset($_REQUEST["nif"])){
+
+            $f = fopen("actividad.txt", "a");
+            fwrite($f, "Trabajador Actualizar ".$_SESSION["nombre"]. " ".date("j F Y h:i:sa"). " ".$_REQUEST["nif"] . "\n");
+            fclose($f);
             			
             $formatter=new Formatter();
             $trabajador=new Trabajador();
@@ -286,6 +324,9 @@ class TrabajadorController extends ControladorBase{
 
 				$trabajador->setTelefono(($_REQUEST["telefono"]!='')?($_REQUEST["telefono"]):null);
 
+
+                //Lo hice de esta forma porque antes me daba problemas, ahora no:
+
                 $extensiones = ['gif', 'x-icon', 'jpeg', 'png', 'svg+xml', 'tiff', 'webp', 'jpg'];
 
                 if(isset($_FILES['foto'])){
@@ -311,31 +352,45 @@ class TrabajadorController extends ControladorBase{
                     $trabajador->setImagen("view/imagenes/profile-icon.png");
                  }
 
+                 
+
 				//$trabajador->setImagen(null);
    
 			    //$trabajador->setImagen(($_REQUEST["imagen"]!='')?($_REQUEST["imagen"]):null);
  
+
+               
 				
                 $save=$trabajador->updateById();
         }
             
         }
-        if (isset($_REQUEST["volvercontroller"])) {
-              $volver=array("controller" => $_REQUEST["volvercontroller"],
-              "action" => $_REQUEST["volveraction"],
-              "clave" => $_REQUEST["volverclave"],
-              "valor" => $_REQUEST["volvervalor"]
-                   );
-        } else  {
-             $volver=array("controller" => $_REQUEST["controller"],
-             "action" => "index"
-              );
+        
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"]
+                            );
+        }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                                $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                            "action" => $_REQUEST["volveraction"],
+                                            "clave" => $_REQUEST["volverclave"],
+                                            "valor" => $_REQUEST["volvervalor"]
+                                            );
+        }else {
+            $volver=array("controller" => $_REQUEST["controller"],
+                "action" => "index"
+             );
         }
 		
 	 $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
     }
 
     public function crear(){
+
+        $f = fopen("actividad.txt", "a");
+        fwrite($f, "Trabajador Crear ".$_SESSION["nombre"]. " ".date("j F Y h:i:sa"). " ".$_REQUEST["nif"] . "\n");
+        fclose($f);
+
         if(isset($_REQUEST["nif"])){
             $formatter=new Formatter();
              
@@ -369,6 +424,8 @@ class TrabajadorController extends ControladorBase{
 
                     //AL PRINCIPIO EL SERVICIO EVALUABLE SERÁ EL MISMO QUE EL SERVICIO PRIMERO AL QUE SE HAYA ASIGNADO LUEGO SE EDITARA SI SE DESEA.
                     $trabajadoresservicios->setServicioEvalua($_REQUEST["ns-servicio"]);
+
+
         
                     $save=$trabajadoresservicios->save();
                 }
@@ -379,45 +436,68 @@ class TrabajadorController extends ControladorBase{
 			      $_SESSION['errMsg']['color']= "alerta-error";
 			  }
         }
-        if (isset($_REQUEST["volvercontroller"])) {
-              $volver=array("controller" => $_REQUEST["volvercontroller"],
-              "action" => $_REQUEST["volveraction"],
-              "clave" => $_REQUEST["volverclave"],
-              "valor" => $_REQUEST["volvervalor"]
-                   );
-        }
-        else {
-             $volver=array("controller" => $_REQUEST["controller"],
+        
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"],
+                        "clave" => "nif",
+                        "valor" => $nif
+                            );
+        }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                                $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                            "action" => $_REQUEST["volveraction"],
+                                            "clave" => $_REQUEST["volverclave"],
+                                            "valor" => $_REQUEST["volvervalor"]
+                                            );
+        }else {
+            $volver=array("controller" => $_REQUEST["controller"],
              "action" => "editar",
               "clave" => "nif",
               "valor" => $nif
               );
         }
+
         $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
 
     }
      
     public function borrar(){
+
+        $f = fopen("actividad.txt", "a");
+        fwrite($f, "Trabajador Actualizar ".$_SESSION["nombre"]. " ".date("j F Y h:i:sa"). " ".$_REQUEST["nif"] . "\n");
+        fclose($f);
+
+        $productividad = new Productividad();
         if(isset($_REQUEST["nif"])){ 
-            $nif=$_REQUEST["nif"];				// (int) solo para números
+            $allproductivitys=$productividad->getAll("id","DESC",10000,-1,null);
+            foreach($allproductivitys as $productivity){
+                if($productivity->nif_trabajador==$_REQUEST["nif"]){
+                    $productivity->deleteBy("nif_trabajador", $_REQUEST["nif"]);
+                }
+            }
+            $nif=$_REQUEST["nif"];
             $trabajador=new Trabajador();
             
            $trabajador->deleteByNif($nif); 
 
 	//		 $trabajador->deleteBy("nif",$nif);
         }
-         if (isset($_REQUEST["volvercontroller"])) {
-               $volver=array("controller" => $_REQUEST["volvercontroller"],
-                    "action" => $_REQUEST["volveraction"],
-                    "clave" => $_REQUEST["volverclave"],
-                    "valor" => $_REQUEST["volvervalor"]
-                     );
-         }
-         else {
+         
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"]
+                            );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                                    $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                                "action" => $_REQUEST["volveraction"],
+                                                "clave" => $_REQUEST["volverclave"],
+                                                "valor" => $_REQUEST["volvervalor"]
+                                                );
+            }else {
                 $volver=array("controller" => $_REQUEST["controller"],
-                "action" => "index"
-                 );
-       }
+                    "action" => "index"
+                     );
+            }
 
          $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
     }
@@ -433,6 +513,11 @@ class TrabajadorController extends ControladorBase{
       //   	echo " nif " . $_REQUEST["new-nif"] . " servicio " . $_REQUEST["m-servicio"].  " alta ". $_REQUEST["fecalta"] .  " baja " . $_REQUEST["fecbaja"] .  " activo " . $_REQUEST["activo-checkbox"] ;
 		 
 		  if(isset($_REQUEST["m-servicio"])){
+
+            $f = fopen("actividad.txt", "a");
+            fwrite($f, "Trabajador Crear_Servicio ".$_SESSION["nombre"]. " ".date("j F Y h:i:sa"). " ".$_REQUEST["m-servicio"] . "\n");
+            fclose($f);
+
             $formatter=new Formatter();
             $trabajadoresservicios= new TrabajadoresServicios(); 
 			
@@ -443,18 +528,27 @@ class TrabajadorController extends ControladorBase{
             $trabajadoresservicios->setFecha_baja(($_REQUEST["fecbaja"]!='')?$formatter->revformatterFecha->fromEsDateformat($_REQUEST["fecbaja"]):null);
             $trabajadoresservicios->setActivo(($_REQUEST["fecbaja"]!='')?$formatter->revformatterFecha->fromEsDateformat($_REQUEST["fecbaja"]):null);
 			$trabajadoresservicios->setActivo('Si');
+
+            
 			
 			 $save=$trabajadoresservicios->save();
 		  }
-		  if (isset($_REQUEST["volvercontroller"])) {
-              $volver=array("controller" => $_REQUEST["volvercontroller"],
-              "action" => $_REQUEST["volveraction"],
-              "clave" => $_REQUEST["volverclave"],
-              "valor" => $_REQUEST["volvervalor"]
-                   );
-           } else  {
-             $volver=array("controller" => $_REQUEST["controller"],"action" => "nuevo");
-          }
+		  
+          if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"]
+                            );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                                    $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                                "action" => $_REQUEST["volveraction"],
+                                                "clave" => $_REQUEST["volverclave"],
+                                                "valor" => $_REQUEST["volvervalor"]
+                                                );
+            }else {
+                $volver=array("controller" => $_REQUEST["controller"],
+                    "action" => "nuevo"
+                );
+            }
 
 	      $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
 	
@@ -468,6 +562,10 @@ class TrabajadorController extends ControladorBase{
 	  public function actualizarServicio() {
 
         if(isset($_REQUEST["modal-id"])){
+
+            $f = fopen("actividad.txt", "a");
+            fwrite($f, "Trabajador Actualizar_Servicio ". $_SESSION["nombre"]. " ".date("j F Y h:i:sa"). " ".$_REQUEST["modal-id"] . "\n");
+            fclose($f);
 			
             $formatter=new Formatter();
             $trabajadoresservicios= new TrabajadoresServicios();
@@ -480,7 +578,7 @@ class TrabajadorController extends ControladorBase{
             $trabajadoresservicios->setFecha_alta(($_REQUEST["fecalta"]!='')?$formatter->revformatterFecha->fromEsDateformat($_REQUEST["fecalta"]):null);
             $trabajadoresservicios->setFecha_baja(($_REQUEST["fecbaja"]!='')?$formatter->revformatterFecha->fromEsDateformat($_REQUEST["fecbaja"]):null);
             $trabajadoresservicios->setActivo(($_REQUEST["fecbaja"]!='')?$formatter->revformatterFecha->fromEsDateformat($_REQUEST["fecbaja"]):null);
-            $trabajadoresservicios->setServicioEvalua(($_REQUEST["m-servicio"]!='')?($_REQUEST["m-servicio"]):null);
+            $trabajadoresservicios->setServicioEvalua(($_REQUEST["m-servicio_eval"]!='')?($_REQUEST["m-servicio_eval"]):null);
 
 		if(isset($_REQUEST["activo-checkbox"])){
 			  if($_REQUEST["activo-checkbox"] == 'on' || $_REQUEST["activo-checkbox"] == 'Si'){
@@ -496,16 +594,21 @@ class TrabajadorController extends ControladorBase{
         $save=$trabajadoresservicios->updateById();
            
         }
-        if (isset($_REQUEST["volvercontroller"])) {
-              $volver=array("controller" => $_REQUEST["volvercontroller"],
-              "action" => $_REQUEST["volveraction"],
-              "clave" => $_REQUEST["volverclave"],
-              "valor" => $_REQUEST["volvervalor"]
-                   );
-        } else  {
-             $volver=array("controller" => $_REQUEST["controller"],
-             "action" => "index"
-              );
+        
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"]
+                            );
+        }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                                    $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                                "action" => $_REQUEST["volveraction"],
+                                                "clave" => $_REQUEST["volverclave"],
+                                                "valor" => $_REQUEST["volvervalor"]
+                                                );
+        }else {
+            $volver=array("controller" => $_REQUEST["controller"],
+                "action" => "index"
+             );
         }
 
 	 $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
@@ -517,7 +620,15 @@ class TrabajadorController extends ControladorBase{
 	//////////////////////////////////////////////////////////////////////////////////
 	
 	 public function borrarServicio(){
+
+
         if(isset($_REQUEST["id"])){ 
+
+            $f = fopen("actividad.txt", "a");
+            fwrite($f, "Trabajador Borrar_Servicio ". $_SESSION["nombre"]. " ".date("j F Y h:i:sa"). " ".$_REQUEST["id"] . "\n");
+            fclose($f);
+
+
             $id=$_REQUEST["id"];				// (int) solo para números
 
 		    $trabajadoresservicios= new TrabajadoresServicios();
@@ -526,18 +637,22 @@ class TrabajadorController extends ControladorBase{
 
 	//		 $trabajador->deleteBy("nif",$nif);
         }
-         if (isset($_REQUEST["volvercontroller"])) {
-               $volver=array("controller" => $_REQUEST["volvercontroller"],
-                    "action" => $_REQUEST["volveraction"],
-                    "clave" => $_REQUEST["volverclave"],
-                    "valor" => $_REQUEST["volvervalor"]
-                     );
-         }
-         else {
+        
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"]
+                            );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                                        $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                                    "action" => $_REQUEST["volveraction"],
+                                                    "clave" => $_REQUEST["volverclave"],
+                                                    "valor" => $_REQUEST["volvervalor"]
+                                                    );
+            }else {
                 $volver=array("controller" => $_REQUEST["controller"],
-                "action" => "index"
-                 );
-       }
+                    "action" => "index"
+                    );
+            }
 
         $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
     }
@@ -550,18 +665,27 @@ class TrabajadorController extends ControladorBase{
 	// Se llama desde el formulario modal                                                          //
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	public function baja() {
+
+
 		$formatter=new Formatter();
         if(isset($_REQUEST["nif"])){
+
+            $f = fopen("actividad.txt", "a");
+            fwrite($f, "Trabajador Baja ". $_SESSION["nombre"]. " ".date("j F Y h:i:sa"). " ".$_REQUEST["nif"] . "\n");
+            fclose($f);
+
             $trabajador=new Trabajador();
             $trabajador->setId($_REQUEST["nif"]);
             $trabajador->setNif(($_REQUEST["nif"]!='')?($_REQUEST["nif"]):null);
             $trabajador->setActivo("No");
+            $trabajador->setProductividad("Si");
 			$trabajador->setFechaBaja(($_REQUEST["fecha_de_baja"]!='')?$formatter->revformatterFecha->fromEsDateformat($_REQUEST["fecha_de_baja"]):null);
             $save=$trabajador->updateActById();
 			
 			$trabajadoresservicios= new TrabajadoresServicios();
+            $id = $trabajadoresservicios->getLastService($_REQUEST["nif"]);
 			$trabajadoresservicios->setId_nif($_REQUEST["nif"]);
-            $trabajadoresservicios->setId($id_registro);
+            $trabajadoresservicios->setId($id->id);
 		 	$trabajadoresservicios->setFecha_baja(($_REQUEST["fecha_de_baja"]!='')?$formatter->revformatterFecha->fromEsDateformat($_REQUEST["fecha_de_baja"]):null);
 			
 			if ( $ultimo_registro=$trabajadoresservicios->getLastService($_REQUEST["nif"]))
@@ -571,20 +695,26 @@ class TrabajadorController extends ControladorBase{
 			}
 			
 			
-			$trabajadoresservicios-> setActivo("No");
-            $save=$trabajadoresservicios->updateAllActivosByNif();
+			//$trabajadoresservicios-> setActivo("No");
+            
+            //$save=$trabajadoresservicios->updateAllActivosByNif();
         }
-        if (isset($_REQUEST["volvercontroller"])) {
-              $volver=array("controller" => $_REQUEST["volvercontroller"],
-              "action" => $_REQUEST["volveraction"],
-              "clave" => $_REQUEST["volverclave"],
-              "valor" => $_REQUEST["volvervalor"]
-                   );
-        } else  {
-             $volver=array("controller" => $_REQUEST["controller"],
-             "action" => "index"
-              );
-        }
+        
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"]
+                            );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                                        $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                                    "action" => $_REQUEST["volveraction"],
+                                                    "clave" => $_REQUEST["volverclave"],
+                                                    "valor" => $_REQUEST["volvervalor"]
+                                                    );
+            }else {
+                $volver=array("controller" => $_REQUEST["controller"],
+                    "action" => "index"
+                  );
+            }
 		
 	 $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
     }
@@ -612,22 +742,27 @@ class TrabajadorController extends ControladorBase{
 		 	$trabajadoresservicios->setFecha_alta(($_REQUEST["nueva_fecalta"]!='')?$formatter->revformatterFecha->fromEsDateformat($_REQUEST["nueva_fecalta"]):null);
             $trabajadoresservicios->setFecha_baja(null);
 			$trabajadoresservicios->setActivo("Si");
-            $trabajadoresservicios->setServicioEvalua($_REQUEST["nuevo_servicio"]);
+            $trabajadoresservicios->setServicioEvalua($_REQUEST["nuevo_servicio_eval"]);
 
 			$save=$trabajadoresservicios->save();
 		}
 		
-        if (isset($_REQUEST["volvercontroller"])) {
-              $volver=array("controller" => $_REQUEST["volvercontroller"],
-              "action" => $_REQUEST["volveraction"],
-              "clave" => $_REQUEST["volverclave"],
-              "valor" => $_REQUEST["volvervalor"]
-                   );
-        } else  {
-             $volver=array("controller" => $_REQUEST["controller"],
-             "action" => "index"
-              );
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"]
+                            );
+        }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                                        $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                                    "action" => $_REQUEST["volveraction"],
+                                                    "clave" => $_REQUEST["volverclave"],
+                                                    "valor" => $_REQUEST["volvervalor"]
+                                                    );
+        }else {
+            $volver=array("controller" => $_REQUEST["controller"],
+                "action" => "index"
+             );
         }
+
 		
 	 $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
     }
@@ -654,16 +789,20 @@ class TrabajadorController extends ControladorBase{
 			$save=$trabajadoresservicios->save();
 		}
 
-        if (isset($_REQUEST["volvercontroller"])) {
-              $volver=array("controller" => $_REQUEST["volvercontroller"],
-              "action" => $_REQUEST["volveraction"],
-              "clave" => $_REQUEST["volverclave"],
-              "valor" => $_REQUEST["volvervalor"]
-                   );
-	  
-        } else  {
-			 // vuelve al regilstro que estaba editando
-             $volver=array("controller" => $_REQUEST["controller"],
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"],
+                        "clave" => "nif",
+                        "valor" => $_REQUEST["ns-nif"]
+                            );
+        }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                                        $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                                    "action" => $_REQUEST["volveraction"],
+                                                    "clave" => $_REQUEST["volverclave"],
+                                                    "valor" => $_REQUEST["volvervalor"]
+                                                    );
+        }else {
+            $volver=array("controller" => $_REQUEST["controller"],
              "action" => "editar",
 			 "clave" => "nif",
              "valor" => $_REQUEST["ns-nif"]
@@ -675,23 +814,28 @@ class TrabajadorController extends ControladorBase{
 
 
     public function asignaservicio2(){
-        if (isset($_REQUEST["volvercontroller"])) {
+        
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
             $volver=array("controller" => $_REQUEST["volvercontroller"],
-            "action" => $_REQUEST["volveraction"],
-            "clave" => $_REQUEST["volverclave"],
-            "valor" => $_REQUEST["volvervalor"]
-                 );
-    
-      } else  {
-           // vuelve al regilstro que estaba editando
-           $volver=array("controller" => $_REQUEST["controller"],
-           "action" => "editar",
-           "clave" => "nif",
-           "valor" => $_REQUEST["ns-nif"]
-            );
-      }
+                        "action" => $_REQUEST["volveraction"],
+                        "clave" => "nif",
+                        "valor" => $_REQUEST["ns-nif"]
+                            );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                                            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                                        "action" => $_REQUEST["volveraction"],
+                                                        "clave" => $_REQUEST["volverclave"],
+                                                        "valor" => $_REQUEST["volvervalor"]
+                                                        );
+            }else {
+                $volver=array("controller" => $_REQUEST["controller"],
+               "action" => "editar",
+               "clave" => "nif",
+               "valor" => $_REQUEST["ns-nif"]
+                );
+            }
 
-      $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
+        $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
     }
 	
 	
@@ -702,20 +846,28 @@ class TrabajadorController extends ControladorBase{
 		$servicio=new Servicio();
 		$productividad=new Productividad();	
         $trabajadoresservicios=new TrabajadoresServicios();
+        $conversaciones = new Conversaciones();
+
+        $totalmensajes = $conversaciones->NoLeidos($_SESSION["id"]);
         
-        if (isset($_REQUEST["volvercontroller"])) {
-               $volver=array("controller" => $_REQUEST["volvercontroller"],
-                             "action" => $_REQUEST["volveraction"],
-                             "clave" => $_REQUEST["volverclave"],
-                             "valor" => $_REQUEST["volvervalor"]
-                           );
-        }
-        else {
-               $volver=array("controller" => $_REQUEST["controller"],
-                             "action" => "editar",
-                                "clave" => "nif",
-                              "valor" => $_REQUEST["nif"]
-                           );
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"],
+                        "clave" => "nif",
+                        "valor" => $_REQUEST["nif"]
+                            );
+        }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                                            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                                        "action" => $_REQUEST["volveraction"],
+                                                        "clave" => $_REQUEST["volverclave"],
+                                                        "valor" => $_REQUEST["volvervalor"]
+                                                        );
+        }else {
+            $volver=array("controller" => $_REQUEST["controller"],
+            "action" => "editar",
+               "clave" => "nif",
+             "valor" => $_REQUEST["nif"]
+          );
         }
 
 
@@ -756,7 +908,8 @@ class TrabajadorController extends ControladorBase{
 				 "allproductivitys"=>$allproductivitys,
 				 "count"=>$count,					 
                  "volver"=>$volver,				 
-                 "operacion"=>"editar"
+                 "operacion"=>"editar",
+                 "totalmensajes" => $totalmensajes
 
         ));
     } 

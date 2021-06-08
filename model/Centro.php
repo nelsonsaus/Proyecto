@@ -1,6 +1,4 @@
 <?php
-
-use Clases\EntidadBase;
 class Centro extends EntidadBase{
     private $table;
     private $model;

@@ -1,8 +1,5 @@
 <?php
 
-use Clases\EntidadBase;
-use Clases\CondicionFiltro;
-
 class Productividad extends EntidadBase{
     private $table;
     private $model;
@@ -12,6 +9,7 @@ class Productividad extends EntidadBase{
     public $nif_trabajador;
     public $id_programa;
 	public $id_servicio;
+	public $id_servicio_evalua;
     public $puntuacion_calidad;
     public $puntuacion_iniciativa;
     public $puntuacion_asistencia;
@@ -20,6 +18,8 @@ class Productividad extends EntidadBase{
     public $dias_trabajados;
     public $importe;
     public $porcentaje;
+	public $fecha_alta;
+	public $fecha_baja;
      
     public function __construct(){
         $this->table="productividad";
@@ -43,14 +43,17 @@ class Productividad extends EntidadBase{
 //    public function getApellido_trabajador() { return $this->apellido_trabajador; }		
     public function getId_programa() { return $this->id_programa; }
 	public function getId_servicio() { return $this->id_servicio; }
+	public function getId_servicio_evalua() { return $this->id_servicio_evalua; }
     public function getPuntuacion_calidad() { return $this->puntuacion_calidad; }
     public function getPuntuacion_iniciativa() { return $this->puntuacion_iniciativa; }
-    public function getPuntuacion_asistencia() { return $this->puntuacion_asistenctia; }
+    public function getPuntuacion_asistencia() { return $this->puntuacion_asistencia; }
     public function getPuntuacion_disponibilidad() { return $this->puntuacion_disponibilidad; }
     public function getPuntuacion_formacion() { return $this->puntuacion_formacion; }
     public function getdias_trabajados() { return $this->dias_trabajados; }
     public function getImporte() { return $this->importe; }
     public function getPorcentaje() { return $this->porcentaje; }
+	public function getFecha_alta() { return $this->fecha_alta; }
+	public function getFecha_baja() { return $this->fecha_baja; }
  
 
     public function setId_periodo($id_periodo) { $this->id_periodo = $id_periodo; }
@@ -59,6 +62,7 @@ class Productividad extends EntidadBase{
 //    public function setApellido_trabajador($nif_trabajador) { $this->apellido_trabajador = $apellido_trabajador; }
     public function setId_programa($id_programa) { $this->id_programa = $id_programa; }
 	public function setId_servicio($id_servicio) { $this->id_servicio = $id_servicio; }
+	public function setId_servicio_evalua($id_servicio_evalua) { $this->id_servicio_evalua = $id_servicio_evalua; }
     public function setPuntuacion_calidad($puntuacion_calidad) { $this->puntuacion_calidad = $puntuacion_calidad; }
     public function setPuntuacion_iniciativa($puntuacion_iniciativa) { $this->puntuacion_iniciativa = $puntuacion_iniciativa; }
     public function setPuntuacion_asistencia($puntuacion_asistencia) { $this->puntuacion_asistencia = $puntuacion_asistencia; }
@@ -67,6 +71,8 @@ class Productividad extends EntidadBase{
     public function setDias_trabajados($dias_trabajados) { $this->dias_trabajados = $dias_trabajados; }
     public function setImporte($importe) { $this->importe = $importe; }
     public function setPorcentaje($porcentaje) { $this->porcentaje = $porcentaje; }
+	public function setFecha_alta($fecha_alta) { $this->fecha_alta = $fecha_alta; }
+	public function setFecha_baja($fecha_baja) { $this->fecha_baja = $fecha_baja; }
  
  //SELECT trabajador.nombre,programa.nombre,apellidos,productividad.id,puntuacion_calidad,anyo,cuatrimestre FROM programa,productividad,trabajador,cuatrimestre 
  //WHERE productividad.nif_trabajador=trabajador.nif 
@@ -77,13 +83,14 @@ class Productividad extends EntidadBase{
  
     public function save(){
 		 try {
-        $stmt=$this->db()->prepare("INSERT INTO productividad (id_periodo,nif_trabajador,id_programa,id_servicio,puntuacion_calidad,puntuacion_iniciativa,puntuacion_asistencia,puntuacion_disponibilidad,puntuacion_formacion,dias_trabajados,importe,porcentaje)
-                VALUES(:id_periodo,:nif_trabajador,:id_programa,:id_servicio, :puntuacion_calidad,:puntuacion_iniciativa,:puntuacion_asistencia,:puntuacion_disponibilidad,:puntuacion_formacion,:dias_trabajados,:importe,:porcentaje);");
+        $stmt=$this->db()->prepare("INSERT INTO productividad (id_periodo,nif_trabajador,id_programa,id_servicio,id_servicio_evalua,puntuacion_calidad,puntuacion_iniciativa,puntuacion_asistencia,puntuacion_disponibilidad,puntuacion_formacion,dias_trabajados,importe,porcentaje,fecha_alta,fecha_baja)
+                VALUES(:id_periodo,:nif_trabajador,:id_programa,:id_servicio,:id_servicio_evalua, :puntuacion_calidad,:puntuacion_iniciativa,:puntuacion_asistencia,:puntuacion_disponibilidad,:puntuacion_formacion,:dias_trabajados,:importe,:porcentaje, :fecha_alta, :fecha_baja);");
 
         $stmt->bindValue(':id_periodo', $this->id_periodo);
         $stmt->bindValue(':nif_trabajador', $this->nif_trabajador);
         $stmt->bindValue(':id_programa', $this->id_programa);
 		$stmt->bindValue(':id_servicio', $this->id_servicio);
+		$stmt->bindValue(':id_servicio_evalua', $this->id_servicio_evalua);
         $stmt->bindValue(':puntuacion_calidad', $this->puntuacion_calidad);
         $stmt->bindValue(':puntuacion_iniciativa', $this->puntuacion_iniciativa);
         $stmt->bindValue(':puntuacion_asistencia', $this->puntuacion_asistencia);
@@ -92,13 +99,16 @@ class Productividad extends EntidadBase{
         $stmt->bindValue(':dias_trabajados', $this->dias_trabajados);
         $stmt->bindValue(':importe', $this->importe);
 		$stmt->bindValue(':porcentaje', $this->porcentaje);
+		$stmt->bindValue(':fecha_alta', $this->fecha_alta);
+		$stmt->bindValue(':fecha_baja', $this->fecha_baja);
 		$_SESSION['errMsg']['error'] = "Se ha generado bien la productividad";
 		$_SESSION['errMsg']['color']= "alert-success";
         $stmt->execute(); 
         return $this->db()->lastInsertID();
 		} catch(PDOException $e) {
-			$_SESSION['errMsg']['error'] = "No se ha podido generar la productividad";
+			$_SESSION['errMsg']['error'] = $e;
 			$_SESSION['errMsg']['color']= "alert-danger";
+			
 		   // return $e->getCode();
         } 
          
@@ -118,7 +128,9 @@ class Productividad extends EntidadBase{
                           puntuacion_formacion=:puntuacion_formacion,
                           dias_trabajados=:dias_trabajados,
                           importe=:importe,
-						  porcentaje=:porcentaje
+						  porcentaje=:porcentaje,
+						  fecha_alta=:fecha_alta,
+						  fecha_baja=:fecha_baja
                           WHERE id=:id");
         	
         $stmt->bindValue(':id_periodo', $this->id_periodo);
@@ -133,6 +145,8 @@ class Productividad extends EntidadBase{
         $stmt->bindValue(':dias_trabajados', $this->dias_trabajados);
         $stmt->bindValue(':importe', $this->importe);
 		$stmt->bindValue(':porcentaje', $this->porcentaje);
+		$stmt->bindValue(':fecha_alta', $this->fecha_alta);
+		$stmt->bindValue(':fecha_baja', $this->fecha_baja);
         $stmt->bindValue(':id',$this->id);
         $stmt->execute();	
     }
@@ -165,11 +179,11 @@ class Productividad extends EntidadBase{
 		$stmt->bindValue(':porcentaje', $this->porcentaje);
         $stmt->bindValue(':id',$this->id);
         $_SESSION['errMsg']['error'] = "Usuario modificado correctamente";
-		$_SESSION['errMsg']['color']= "alerta-correcto";
+		$_SESSION['errMsg']['color']= "alert-success";
 		$stmt->execute();
 		} catch(PDOException $e) {
             $_SESSION['errMsg']['error'] = "No se ha podido modificar el usuario";
-			$_SESSION['errMsg']['color']= "alerta-error";
+			$_SESSION['errMsg']['color']= "alert-danger";
         }	
     }
 
@@ -223,7 +237,10 @@ class Productividad extends EntidadBase{
 						servicio.nombre  AS nombre_servicio,
 						productividad.id AS id, 
 						trabajador.nombre AS nombre_trabajador, 
-						trabajador.apellidos AS apellidos_trabajador, 
+						trabajador.apellidos AS apellidos_trabajador,
+						productividad.id_servicio,
+						productividad.fecha_alta,
+						productividad.fecha_baja,
 						productividad.puntuacion_calidad, 
 						productividad.puntuacion_iniciativa, 
 						productividad.puntuacion_asistencia, 
@@ -250,7 +267,7 @@ class Productividad extends EntidadBase{
                                         $f="$columna LIKE :$columna";
                                 }
 				if ($yawhere == 0 ) {
-				    $query=$query." WHERE $f AND ((trabajador.productividad)='Si') AND ((trabajador.activo)='Si') ";
+				    $query=$query." WHERE $f AND ((trabajador.productividad)='Si') ";
 				    $yawhere=1;
 				}
 				else {
@@ -281,7 +298,7 @@ class Productividad extends EntidadBase{
 						trabajador.productividad,
 						 trabajador.activo
                       FROM (((productividad INNER JOIN cuatrimestre ON productividad.id_periodo = cuatrimestre.id) INNER JOIN trabajador ON productividad.nif_trabajador = trabajador.nif) INNER JOIN servicio ON productividad.id_servicio = servicio.id) INNER JOIN programa ON productividad.id_programa = programa.id
-					    WHERE (((trabajador.productividad)='Si') AND ((trabajador.activo)='Si'))
+					    WHERE (((trabajador.productividad)='Si'))
 			           ORDER BY $ordercol $order";		
 	
 	}
@@ -307,7 +324,7 @@ class Productividad extends EntidadBase{
 	
 	$bindparams=null;
 	
-	$query="SELECT trabajador.nombre AS nombre_trabajador,programa.nombre AS nombre_programa,apellidos AS apellidos_trabajador,productividad.id AS id,puntuacion_calidad,puntuacion_iniciativa,puntuacion_asistencia,puntuacion_disponibilidad,puntuacion_formacion,dias_trabajados,importe,anyo,cuatrimestre.nombre ,porcentaje 
+	$query="SELECT trabajador.nombre AS nombre_trabajador,programa.nombre AS nombre_programa,apellidos AS apellidos_trabajador,productividad.id AS id, puntuacion_calidad,puntuacion_iniciativa,puntuacion_asistencia,puntuacion_disponibilidad,puntuacion_formacion,dias_trabajados,importe,anyo,cuatrimestre.nombre ,porcentaje 
 			FROM programa,productividad,trabajador,cuatrimestre 
 			WHERE productividad.nif_trabajador=trabajador.nif && productividad.id_periodo=cuatrimestre.id && programa.id=productividad.id_programa && trabajador.nif= \"$nif\"
 			ORDER BY $ordercol $order";	
@@ -347,13 +364,15 @@ class Productividad extends EntidadBase{
 	//  Devuelve el nro de trabajadorespor servicio (para laborales y funcionarios)
 	//  Son los trabajadores que están activos en ese momento para cada servicio
 	//////////////////////////////////////////////////////////////////////////
-    public function countTrabPeriodo(){
-		$stmt = $this->db()->prepare("SELECT trabajadores_servicios.id_servicio AS id_servicio, trabajador.categoria AS categoria, Count(trabajador.nif) AS nro_trabajadores,
-		 					trabajador.productividad, trabajador.activo, trabajadores_servicios.activo
-							FROM trabajadores_servicios INNER JOIN trabajador ON trabajadores_servicios.nif = trabajador.nif
-							GROUP BY trabajadores_servicios.id_servicio, trabajador.categoria, trabajador.productividad, trabajador.activo, trabajadores_servicios.activo
-							HAVING (((trabajador.productividad)='Si') AND ((trabajador.activo)='Si') AND ((trabajadores_servicios.activo)='Si'))
-							ORDER BY trabajadores_servicios.id_servicio");
+    public function countTrabPeriodo($id_periodo){
+		$stmt = $this->db()->prepare("SELECT productividad.id_servicio AS id_servicio, trabajador.categoria AS categoria, Count(trabajador.nif) AS nro_trabajadores, productividad.id_periodo
+								FROM trabajador INNER JOIN productividad ON trabajador.nif = productividad.nif_trabajador
+								GROUP BY productividad.id_servicio, trabajador.categoria, productividad.id_periodo
+								HAVING (((productividad.id_periodo)=:id_periodo))
+								ORDER BY productividad.id_servicio");
+
+							
+		$stmt->bindValue(':id_periodo',$id_periodo);				
 		$stmt->execute();
         $resultSet=$stmt->fetchAll(PDO::FETCH_CLASS, $this->model);
 		return $resultSet;
@@ -363,8 +382,8 @@ class Productividad extends EntidadBase{
 	// Esta función se llama desde  function reparto()del controller
 	//  Calcula el nro de puntos de calidad asignado a cada funcionario y laboral
 	//////////////////////////////////////////////////////////////////////////
-    public function countPuntosServicio ($id_periodo, $id_servicio,$parametro,$categoria){
-		$stmt = $this->db()->prepare("SELECT   Sum($parametro * dias_trabajados ) AS suma_parametro 
+    public function countPuntosServicio($id_periodo, $id_servicio,$parametro,$categoria){
+		$stmt = $this->db()->prepare("SELECT   Sum($parametro * dias_trabajados * porcentaje ) AS suma_parametro 
 		 FROM productividad INNER JOIN trabajador ON productividad.nif_trabajador = trabajador.nif
 		 GROUP BY productividad.id_servicio, productividad.id_periodo, trabajador.categoria
 		 HAVING (((productividad.id_periodo)=:id_periodo) AND ((productividad.id_servicio)=:id_servicio) AND ((trabajador.categoria)=:categoria))");
@@ -381,7 +400,7 @@ class Productividad extends EntidadBase{
 		$count=$stmt->fetchColumn();
 	    return $count; 
 		//return $resultSet;
-    }	
+    }
 	
 		
 	 //////////////////////////////////////////////////////////////////////////
@@ -510,6 +529,24 @@ class Productividad extends EntidadBase{
 		$stmt->bindValue(':id',$this->id);
         $stmt->execute();
 	}
+
+
+
+
+
+	//ESTE METODO LO HAGO YA QUE EN EL OTRO DE ENTIDADBASE ME SALEN ALGUNAS COSAS COMO NULL Y AQUI ME LO MUESTRA TODO BIEN
+	public function getById2($id){
+		$stmt=$this->db()->prepare("SELECT id, id_periodo, nif_trabajador, id_programa,
+			id_servicio, id_servicio_evalua, puntuacion_calidad, puntuacion_iniciativa, puntuacion_asistencia, puntuacion_disponibilidad,
+			puntuacion_formacion, dias_trabajados, importe, porcentaje, fecha_alta, fecha_baja FROM productividad WHERE id='$id'");
+		
+
+		$stmt->execute();
+          
+        $resultado=$stmt->fetchAll(PDO::FETCH_CLASS, $this->model);
+		return $resultado;
+	}
+
 
 
 

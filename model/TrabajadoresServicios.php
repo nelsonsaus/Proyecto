@@ -1,8 +1,5 @@
 <?php
 
-use Clases\EntidadBase;
-use Clases\CondicionFiltro;
-
 class TrabajadoresServicios extends EntidadBase{
     private $table;
     private $model;
@@ -62,12 +59,12 @@ class TrabajadoresServicios extends EntidadBase{
         $stmt->bindValue(':id_servicio_evalua', $this->id_servicio_evalua);
 
         $_SESSION['errMsg']['error'] = "Se ha guardado bien el registro";
-		$_SESSION['errMsg']['color']= "alerta-correcto";
+		$_SESSION['errMsg']['color']= "alert-success";
 		$stmt->execute(); 
         return $this->db()->lastInsertID();
 		} catch(PDOException $e) {
 			$_SESSION['errMsg']['error'] = "No se ha podido guardar el registro";
-			$_SESSION['errMsg']['color']= "alerta-error";
+			$_SESSION['errMsg']['color']= "alert-danger";
 		   // return $e->getCode();
         }
 		
@@ -87,11 +84,11 @@ class TrabajadoresServicios extends EntidadBase{
 			$stmt->bindValue(':id', $this->id);
 			$stmt->bindValue(':fecha_baja', $this->fecha_baja);
             $_SESSION['errMsg']['error'] = "Fecha de baja actualizada correctamente";
-			$_SESSION['errMsg']['color']= "alerta-correcto";
+			$_SESSION['errMsg']['color']= "alert-success";
 			$stmt->execute();
 		} catch(PDOException $e) {
             $_SESSION['errMsg']['error'] = "Hay algún problema al actualizar la fecha de baja";
-			$_SESSION['errMsg']['color']= "alerta-error";
+			$_SESSION['errMsg']['color']= "alert-danger";
         }
     }
 	
@@ -108,11 +105,11 @@ class TrabajadoresServicios extends EntidadBase{
 			$stmt->bindValue(':nif', $this->nif);
 			$stmt->bindValue(':activo', $this->activo);
             $_SESSION['errMsg']['error'] = "Estos servicios del usuario ya no están activos";
-			$_SESSION['errMsg']['color']= "alerta-correcto";
+			$_SESSION['errMsg']['color']= "alert-success";
 			$stmt->execute();
 		} catch(PDOException $e) {
             $_SESSION['errMsg']['error'] = "Hay algún problema al actualizar los registros";
-			$_SESSION['errMsg']['color']= "alerta-error";
+			$_SESSION['errMsg']['color']= "alert-danger";
         }
     }
 	
@@ -122,7 +119,7 @@ class TrabajadoresServicios extends EntidadBase{
 		
 	
 	public function getServiciosdeTrabajador($nif){
-		$query="SELECT trabajadores_servicios.id as id, nif, id_servicio, servicio.nombre AS servicio_nombre, fecha_alta,fecha_baja, activo 
+		$query="SELECT trabajadores_servicios.id as id, nif, id_servicio, servicio.nombre AS servicio_nombre, id_servicio_evalua, fecha_alta,fecha_baja, activo 
 FROM servicio INNER JOIN trabajadores_servicios ON servicio.id = trabajadores_servicios.id_servicio
 WHERE  nif=:nif ORDER BY trabajadores_servicios.fecha_alta DESC";
 
@@ -178,11 +175,11 @@ public function updateById(){
         $stmt->bindValue(':activo', $this->activo);
         $stmt->bindValue(':id_servicio_evalua', $this->id_servicio_evalua);
  	    $_SESSION['errMsg']['error'] = "Servicio actualizado correctamente";
-		$_SESSION['errMsg']['color']= "alerta-correcto";
+		$_SESSION['errMsg']['color']= "alert-success";
 		$stmt->execute();
 		} catch(PDOException $e) {
         $_SESSION['errMsg']['error'] = "No se ha podido actualizar el servicio";
-		$_SESSION['errMsg']['color']= "alerta-error";
+		$_SESSION['errMsg']['color']= "alert-danger";
         }
     }
 
@@ -214,7 +211,7 @@ public function updateById(){
     //Cuando hay varios servicios evaluables y servicios en el caso de PRODUCTIVIDAD donde una persona puede tener varios registros
     //Con servicios y servicios que evaluan diferentes:
     public function getServEval2($id, $programa, $nif){
-        $stmt=$this->db()->prepare("SELECT id_servicio_evalua, servicio.nombre, trabajadores_servicios.id, productividad.id_programa FROM (trabajadores_servicios INNER JOIN productividad on trabajadores_servicios.id_servicio=productividad.id_servicio) INNER JOIN servicio on trabajadores_servicios.id_servicio=servicio.id WHERE trabajadores_servicios.id_servicio='$id' AND productividad.id_programa='$programa' AND nif='$nif';");
+        $stmt=$this->db()->prepare("SELECT trabajadores_servicios.id_servicio_evalua, servicio.nombre, trabajadores_servicios.id, productividad.id_programa FROM (trabajadores_servicios INNER JOIN productividad on trabajadores_servicios.id_servicio=productividad.id_servicio) INNER JOIN servicio on trabajadores_servicios.id_servicio=servicio.id WHERE trabajadores_servicios.id_servicio='$id' AND productividad.id_programa='$programa' AND nif='$nif';");
 
         $stmt->execute();
         
@@ -222,6 +219,23 @@ public function updateById(){
 	    return $resultado; 
     }
 
+
+
+    public function conseguirtrabserv($nif, $servicio, $servicioeva){
+        $stmt=$this->db()->prepare("SELECT * FROM trabajadores_servicios WHERE nif='$nif' AND id_servicio='$servicio' AND id_servicio_evalua='$servicioeva'");
+
+        $stmt->execute();
+        
+        $resultado=$stmt->fetchAll(PDO::FETCH_CLASS, $this->model);
+	    return  $resultado;
+    }
+
+
+    public function updateactivo($id, $estado){
+		$stmt=$this->db()->prepare("UPDATE trabajadores_servicios SET activo='$estado' WHERE id='$id'");
+
+        $stmt->execute();
+	}
 
 	  
 }

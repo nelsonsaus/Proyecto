@@ -1,6 +1,4 @@
 <?php
-
-
 				// Obtener variables desde mvc
 
 require('fpdf/fpdf.php');

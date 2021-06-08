@@ -1,97 +1,94 @@
-<!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4" style="height:1100px">
-    <!-- Brand Logo -->
-    <a href="../../index3.html" class="brand-link  navbar-header">
+<aside id="sidebar" class="main-sidebar shadow-lg" style="position:fixed;top:0%;z-index:60;margin-top:0; width:15%; height:710px; overflow:hidden; background-color:#1c1c1c;">
+    <a href="../../index3.html" class="navbar-brand text-center" style="background-color: rgb(18, 18, 18);height:60px; width:100%;">
       <img src="view/imagenes/LogoJunta.png"
            alt="Productividad"
-           class="brand-image img-circle elevation-3"
-           style="opacity: .8">
-      <span class="brand-text font-weight-light">Productividad</span>
+           class="rounded-circle shadow-lg"
+           style="background-color: rgba(18, 18, 18, 0.4); border:2px solid #030f24;height:45px;" >
+      <span class="font-weight-light" style="background-color: rgb(18, 18, 18); color:white;height:60px; padding-right:30px;">Productividad</span>
     </a>
 
-    <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="view/imagenes/usuario-80x80.png"  class="img-circle elevation-2" alt="User Image">
+      <div class="mb-3" style="height:200px">
+        <div style="text-align:center; margin-top:20px; margin-bottom:30px;">
+          <img src="<?php echo $_SESSION['imagen']; ?>" style="width:60%; height:130px; border-radius:80px;object-fit: cover;"  class="img-circle elevation-2" alt="User Image">
         </div>
-        <div class="info">
-          <a href="#" class="d-block">Administrador</a>
+        <div style="margin-left:20px; margin-top:7px; width:90%; margin:auto; text-align:center;">
+          <p style="color:white;font-weight:bold;"><?php echo $_SESSION["nombre"]; ?></p>
+          <hr style="background-color:white;margin-bottom:30px;">
         </div>
       </div>
 
-      <!-- Sidebar Menu -->
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <li class="nav-item has-treeview">
-            <a href="index.php?controller=Dashboard&action=index"  class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Panel de Control
-                <i class="right fas fa-angle-left"></i>
-              </p>
+        <ul class="nav nav-sidebar" role="menu" style="height:300px;">
+
+
+          <li class="elementoside" class="nav-item" style="float:left; width:100%;">
+            <a href="index.php?controller=Dashboard&action=index" style="font-weight:bold; font-size:18px;"  class="nav-link text-white">
+            <i class="nav-icon fas fa-th"></i>
+                INICIO
             </a>
            </li>
            
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <li class="elementoside" class="nav-item" style="float:left;width:100%;" onclick="sideclick()">
+              <a class="nav-link" href="#" style="font-weight:bold; font-size:18px;color:white;" role="button" >
               <i class="nav-icon fas fa-th"></i>
-              <p>
                 Tablas
-              </p>
-            </a>
-             <ul class="nav nav-treeview">
-               <?php
+              </a>
+              <div id="divside" style="display:none;">
+                <?php
             $paginas = array(
             "trabajador" => "Trabajador",
             "programa" => "Programa",
             "servicio" => "Servicio",
+            "puesto" => "Puesto",
              );
-			foreach ($paginas as $controller => $nombre) { ?>
-             <li class="nav-item">          
-            <a class="nav-link" href="index.php?controller=<?php echo $controller ?>&action=index" ><?php /* if ($_GET["controller"]==$controller) { echo "class='active'";}*/ ?>
-			<i class="far fa-circle nav-icon"></i>
-			<p><?php echo $nombre ?></p>
+			foreach ($paginas as $controller => $nombre) { ?>        
+            <a class="enlacesside" style="color:white; display:block; width:100%; height:30px; text-decoration:none;" class="" href="index.php?controller=<?php echo $controller ?>&action=index" ><?php /* if ($_GET["controller"]==$controller) { echo "class='active'";}*/ ?>
+			        <?php echo $nombre ?>
             </a> 
+      <?php } ?>
+              </div>
             </li>
-            <?php } ?>
-             </ul>
           </li>
           
           <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-credit-card"></i>
-              <p>
+            <li class="elementoside" class="nav-item dropdown" style="float:left;width:100%;" onclick="sideclick2()">
+            <a class="nav-link" href="#" style="font-weight:bold; font-size:18px;color:white;" role="button" >
+              <i class="nav-icon fas fa-th"></i>
                 Productividad
-                
-              </p>
-            </a>
-             <ul class="nav nav-treeview">
-              
-               <?php
+              </a>
+              <div id="divside2" style="display:none;">
+                <?php
+
                 $paginas = array(
                 "cuatrimestre" => "Cuatrimestre",
-				"productividad" => "Productividad",
+				        "productividad" => "Productividad",
+                "pdf" => "Documentos"
                                 );
 			
-               foreach ($paginas as $controller => $nombre) { ?>
-             <li class="nav-item">          
-            <a class="nav-link" href="index.php?controller=<?php echo $controller ?>&action=index" ><?php /* if ($_GET["controller"]==$controller) { echo "class='active'";}*/ ?>
-			<i class="far fa-circle nav-icon"></i>
-			<p><?php echo $nombre ?></p>
+               foreach ($paginas as $controller => $nombre) { ?>     
+            <a class="enlacesside" style="color:white; display:block; width:100%; height:30px; text-decoration:none;"  href="index.php?controller=<?php echo $controller ?>&action=index" ><?php /* if ($_GET["controller"]==$controller) { echo "class='active'";}*/ ?>
+			        <?php echo $nombre ?>
             </a> 
-            </li>
             <?php } ?>
+            </div>
+            </li>
+          </li>
 
+          <li class="elementoside" class="nav-item" style="float:left; width:100%;height:50px;">
+              <a href="index.php?controller=usuarios&action=index" style="font-weight:bold; font-size:18px;width:100%;"  class="nav-link text-white">
+                <i class="nav-icon fas fa-th"><span style="padding-left:5px;">USUARIOS</span></i>
+              </a>
+           </li>
              </ul>
           </li>
           
         </ul>
+
+      
       </nav>
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
-  </aside>
+</aside>

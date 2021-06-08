@@ -1,0 +1,298 @@
+Servicioo: 19 Categoria sera F: Funcionario, Cuenta: 2
+Servicio: 19   Categoria sera F:  funcionarios: 2, laborales:  0  
+Servicioo: 20 Categoria sera F: Funcionario, Cuenta: 3
+Servicio: 20   Categoria sera F:  funcionarios: 3, laborales:  0  
+Servicioo: 21 Categoria sera F: Funcionario, Cuenta: 2
+Servicio: 21   Categoria sera F:  funcionarios: 2, laborales:  0  
+Servicioo: 22 Categoria sera F: Funcionario, Cuenta: 2
+Servicio: 22   Categoria sera F:  funcionarios: 2, laborales:  0  
+
+Programa: 68, Funcionarios: 4, Presupuesto: 323232.00   Importe por Func:  80808
+Datos PERIODO: 18 Servicio:19  Trabajadores: 2  valor individuo F: 80808  valor servicio 161616 
+Datos PERIODO: 18 Servicio:22  Trabajadores: 2  valor individuo F: 80808  valor servicio 161616 
+
+Programa: 68, Funcionarios: 4, Presupuesto: 4444.00   Importe por Func:  1111
+Datos PERIODO: 18 Servicio:19  Trabajadores: 2  valor individuo F: 1111  valor servicio 2222 
+Datos PERIODO: 18 Servicio:22  Trabajadores: 2  valor individuo F: 1111  valor servicio 2222 
+
+Programa: 69, Funcionarios: 5, Presupuesto: 0.00   Importe por Func:  0
+Datos PERIODO: 18 Servicio:20  Trabajadores: 3  valor individuo F: 0  valor servicio 0 
+Datos PERIODO: 18 Servicio:21  Trabajadores: 2  valor individuo F: 0  valor servicio 0 
+
+Programa: 69, Funcionarios: 5, Presupuesto: 111114.00   Importe por Func:  22222.8
+Datos PERIODO: 18 Servicio:20  Trabajadores: 3  valor individuo F: 22222.8  valor servicio 66668.4 
+Datos PERIODO: 18 Servicio:21  Trabajadores: 2  valor individuo F: 22222.8  valor servicio 44445.6 
+
+Programa: 69, Funcionarios: 5, Presupuesto: 242424.00   Importe por Func:  48484.8
+Datos PERIODO: 18 Servicio:20  Trabajadores: 3  valor individuo F: 48484.8  valor servicio 145454.4 
+Datos PERIODO: 18 Servicio:21  Trabajadores: 2  valor individuo F: 48484.8  valor servicio 96969.6 
+
+ Programa: 66, Cuenta: 0, Presupuesto: 222.00  
+
+ Programa Lab: 66, Nro Laborales: 0,Presupuesto: 222.00,  Importe por Lab:  0  
+Datos obtenidos: 18 Servicio:19  Trabajadores: 0  Importe laborale: 0  valor 0 
+Datos obtenidos: 18 Servicio:22  Trabajadores: 0  Importe laborale: 0  valor 0 
+
+ Programa: 67, Cuenta: 0, Presupuesto: 444.00  
+
+ Programa Lab: 67, Nro Laborales: 0,Presupuesto: 444.00,  Importe por Lab:  0  
+Datos obtenidos: 18 Servicio:21  Trabajadores: 0  Importe laborale: 0  valor 0 
+
+ Programa: 70, Cuenta: 0, Presupuesto: 1110.00  
+
+ Programa Lab: 70, Nro Laborales: 0,Presupuesto: 1110.00,  Importe por Lab:  0  
+Datos obtenidos: 18 Servicio:20  Trabajadores: 0  Importe laborale: 0  valor 0 
+
+ Programa: 70, Cuenta: 0, Presupuesto: 2231.00  
+
+ Programa Lab: 70, Nro Laborales: 0,Presupuesto: 2231.00,  Importe por Lab:  0  
+Datos obtenidos: 18 Servicio:20  Trabajadores: 0  Importe laborale: 0  valor 0 
+
+ Programa: 70, Cuenta: 0, Presupuesto: 3343.00  
+
+ Programa Lab: 70, Nro Laborales: 0,Presupuesto: 3343.00,  Importe por Lab:  0  
+Datos obtenidos: 18 Servicio:20  Trabajadores: 0  Importe laborale: 0  valor 0 
+
+
+
+
+
+ Servicio 22  Imp FUnc 2222  ImpLab  0  
+VALORES .... 888.8   444.4  222.2 444.4	444.4   
+VALOR CALIDAD   888.8  =  0.40  * 2222  
+ ID 18 Servicio: 22     puntos:  8
+   VALOR punto CALIDAD   111.1  =888.8  /  8  
+ Servicio: 22, Categoria: Funcionario , Puntos  8  ValorCalidad  111.1  
+ Servicio: 22, Categoria: Laboral , Puntos    ValorCalidad  0  
+VALOR punto INICIATICA    55.55  =444.4 / 8  <BR> Servicio: 22, Categoria: Funcionario , Puntos  8  Valorinciativa  55.55  
+ Servicio: 22, Categoria: Laboral , Puntos    Valorinciativa  0  
+ Servicio: 22, Categoria: Funcionario , Puntos  8  ValorAsistencia  27.775  
+ Servicio: 22, Categoria: Laboral , Puntos    ValorAsistencia  0  
+ Servicio: 22, Categoria: Funcionario , Puntos  8  ValorDisponibl  55.55  
+ Servicio: 22, Categoria: Laboral , Puntos    ValorDisponibl  0  
+ Servicio: 22, Categoria: Funcionario , Puntos  8  ValorFormacion  55.55  
+ Servicio: 22, Categoria: Laboral , Puntos    ValorFormacion  0  
+
+ id  69  programa  22   nif 13046753 
+
+ Escribir esta Nota en importes funcionarios:    888.8   dias 2 
+
+ id  68  programa  22   nif 11111111Z 
+
+ Escribir esta Nota en importes funcionarios:    1222.1   dias 2 
+
+ id  68  programa  22   nif 23213123A 
+
+ Escribir esta Nota en importes funcionarios:    1222.1   dias 2 
+
+ id  68  programa  22   nif 36421551 
+
+ Escribir esta Nota en importes funcionarios:    1222.1   dias 2 
+
+ Servicio 21  Imp FUnc 96970  ImpLab  0  
+VALORES .... 38788   19394  9697 19394	19394   
+VALOR CALIDAD   38788  =  0.40  * 96970  
+ ID 18 Servicio: 21     puntos:  6
+   VALOR punto CALIDAD   6464.6666666667  =38788  /  6  
+ Servicio: 21, Categoria: Funcionario , Puntos  6  ValorCalidad  6464.6666666667  
+ Servicio: 21, Categoria: Laboral , Puntos    ValorCalidad  0  
+VALOR punto INICIATICA    3232.3333333333  =19394 / 6  <BR> Servicio: 21, Categoria: Funcionario , Puntos  6  Valorinciativa  3232.3333333333  
+ Servicio: 21, Categoria: Laboral , Puntos    Valorinciativa  0  
+ Servicio: 21, Categoria: Funcionario , Puntos  6  ValorAsistencia  1616.1666666667  
+ Servicio: 21, Categoria: Laboral , Puntos    ValorAsistencia  0  
+ Servicio: 21, Categoria: Funcionario , Puntos  8  ValorDisponibl  2424.25  
+ Servicio: 21, Categoria: Laboral , Puntos    ValorDisponibl  0  
+ Servicio: 21, Categoria: Funcionario , Puntos  8  ValorFormacion  2424.25  
+ Servicio: 21, Categoria: Laboral , Puntos    ValorFormacion  0  
+
+ id  67  programa  21   nif 11111111Z 
+
+ Escribir esta Nota en importes funcionarios:    42020.333333333   dias 2 
+
+ id  69  programa  21   nif 11111111Z 
+
+ Escribir esta Nota en importes funcionarios:    64646.666666667   dias 2 
+
+ Servicio 20  Imp FUnc 145454  ImpLab  0  
+VALORES .... 58181.6   29090.8  14545.4 29090.8	29090.8   
+VALOR CALIDAD   58181.6  =  0.40  * 145454  
+ ID 18 Servicio: 20     puntos:  14
+   VALOR punto CALIDAD   4155.8285714286  =58181.6  /  14  
+ Servicio: 20, Categoria: Funcionario , Puntos  14  ValorCalidad  4155.8285714286  
+ Servicio: 20, Categoria: Laboral , Puntos    ValorCalidad  0  
+VALOR punto INICIATICA    1818.175  =29090.8 / 16  <BR> Servicio: 20, Categoria: Funcionario , Puntos  16  Valorinciativa  1818.175  
+ Servicio: 20, Categoria: Laboral , Puntos    Valorinciativa  0  
+ Servicio: 20, Categoria: Funcionario , Puntos  14  ValorAsistencia  1038.9571428571  
+ Servicio: 20, Categoria: Laboral , Puntos    ValorAsistencia  0  
+ Servicio: 20, Categoria: Funcionario , Puntos  16  ValorDisponibl  1818.175  
+ Servicio: 20, Categoria: Laboral , Puntos    ValorDisponibl  0  
+ Servicio: 20, Categoria: Funcionario , Puntos  14  ValorFormacion  2077.9142857143  
+ Servicio: 20, Categoria: Laboral , Puntos    ValorFormacion  0  
+
+ id  66  programa  20   nif 23213123A 
+
+ Escribir esta Nota en importes funcionarios:    29090.8   dias 2 
+
+ id  69  programa  20   nif 11111111Z 
+
+ Escribir esta Nota en importes funcionarios:    43636.2   dias 2 
+
+ id  69  programa  20   nif 13046753 
+
+ Escribir esta Nota en importes funcionarios:    43636.2   dias 2 
+
+ id  69  programa  20   nif 23213123A 
+
+ Escribir esta Nota en importes funcionarios:    43636.2   dias 2 
+
+ id  69  programa  20   nif 23213123A 
+
+ Escribir esta Nota en importes funcionarios:    43636.2   dias 2 
+
+ Servicio 19  Imp FUnc 2222  ImpLab  0  
+VALORES .... 888.8   444.4  222.2 444.4	444.4   
+VALOR CALIDAD   888.8  =  0.40  * 2222  
+ ID 18 Servicio: 19     puntos:  2
+   VALOR punto CALIDAD   444.4  =888.8  /  2  
+ Servicio: 19, Categoria: Funcionario , Puntos  2  ValorCalidad  444.4  
+ Servicio: 19, Categoria: Laboral , Puntos    ValorCalidad  0  
+VALOR punto INICIATICA    111.1  =444.4 / 4  <BR> Servicio: 19, Categoria: Funcionario , Puntos  4  Valorinciativa  111.1  
+ Servicio: 19, Categoria: Laboral , Puntos    Valorinciativa  0  
+ Servicio: 19, Categoria: Funcionario , Puntos  2  ValorAsistencia  111.1  
+ Servicio: 19, Categoria: Laboral , Puntos    ValorAsistencia  0  
+ Servicio: 19, Categoria: Funcionario , Puntos  4  ValorDisponibl  111.1  
+ Servicio: 19, Categoria: Laboral , Puntos    ValorDisponibl  0  
+ Servicio: 19, Categoria: Funcionario , Puntos  2  ValorFormacion  222.2  
+ Servicio: 19, Categoria: Laboral , Puntos    ValorFormacion  0  
+
+ id  67  programa  19   nif 23213123A 
+
+ Escribir esta Nota en importes funcionarios:    2444.2   dias 2 
+
+ id  68  programa  19   nif 21935933 
+
+ Escribir esta Nota en importes funcionarios:    3999.6   dias 2 
+
+ id  68  programa  19   nif 36421551 
+
+ Escribir esta Nota en importes funcionarios:    3999.6   dias 2 
+
+ Servicio 22  Imp FUnc 2222  ImpLab  0  
+VALORES .... 888.8   444.4  222.2 444.4	444.4   
+VALOR CALIDAD   888.8  =  0.40  * 2222  
+ ID 18 Servicio: 22     puntos:  8
+   VALOR punto CALIDAD   111.1  =888.8  /  8  
+ Servicio: 22, Categoria: Funcionario , Puntos  8  ValorCalidad  111.1  
+ Servicio: 22, Categoria: Laboral , Puntos    ValorCalidad  0  
+VALOR punto INICIATICA    55.55  =444.4 / 8  <BR> Servicio: 22, Categoria: Funcionario , Puntos  8  Valorinciativa  55.55  
+ Servicio: 22, Categoria: Laboral , Puntos    Valorinciativa  0  
+ Servicio: 22, Categoria: Funcionario , Puntos  8  ValorAsistencia  27.775  
+ Servicio: 22, Categoria: Laboral , Puntos    ValorAsistencia  0  
+ Servicio: 22, Categoria: Funcionario , Puntos  8  ValorDisponibl  55.55  
+ Servicio: 22, Categoria: Laboral , Puntos    ValorDisponibl  0  
+ Servicio: 22, Categoria: Funcionario , Puntos  8  ValorFormacion  55.55  
+ Servicio: 22, Categoria: Laboral , Puntos    ValorFormacion  0  
+
+ id  69  programa  22   nif 13046753 
+
+ Escribir esta Nota en importes funcionarios:    888.8   dias 2 
+
+ id  68  programa  22   nif 11111111Z 
+
+ Escribir esta Nota en importes funcionarios:    1222.1   dias 2 
+
+ id  68  programa  22   nif 23213123A 
+
+ Escribir esta Nota en importes funcionarios:    1222.1   dias 2 
+
+ id  68  programa  22   nif 36421551 
+
+ Escribir esta Nota en importes funcionarios:    1222.1   dias 2 
+
+ Servicio 21  Imp FUnc 96970  ImpLab  0  
+VALORES .... 38788   19394  9697 19394	19394   
+VALOR CALIDAD   38788  =  0.40  * 96970  
+ ID 18 Servicio: 21     puntos:  6
+   VALOR punto CALIDAD   6464.6666666667  =38788  /  6  
+ Servicio: 21, Categoria: Funcionario , Puntos  6  ValorCalidad  6464.6666666667  
+ Servicio: 21, Categoria: Laboral , Puntos    ValorCalidad  0  
+VALOR punto INICIATICA    3232.3333333333  =19394 / 6  <BR> Servicio: 21, Categoria: Funcionario , Puntos  6  Valorinciativa  3232.3333333333  
+ Servicio: 21, Categoria: Laboral , Puntos    Valorinciativa  0  
+ Servicio: 21, Categoria: Funcionario , Puntos  6  ValorAsistencia  1616.1666666667  
+ Servicio: 21, Categoria: Laboral , Puntos    ValorAsistencia  0  
+ Servicio: 21, Categoria: Funcionario , Puntos  8  ValorDisponibl  2424.25  
+ Servicio: 21, Categoria: Laboral , Puntos    ValorDisponibl  0  
+ Servicio: 21, Categoria: Funcionario , Puntos  8  ValorFormacion  2424.25  
+ Servicio: 21, Categoria: Laboral , Puntos    ValorFormacion  0  
+
+ id  67  programa  21   nif 11111111Z 
+
+ Escribir esta Nota en importes funcionarios:    42020.333333333   dias 2 
+
+ id  69  programa  21   nif 11111111Z 
+
+ Escribir esta Nota en importes funcionarios:    64646.666666667   dias 2 
+
+ Servicio 20  Imp FUnc 145454  ImpLab  0  
+VALORES .... 58181.6   29090.8  14545.4 29090.8	29090.8   
+VALOR CALIDAD   58181.6  =  0.40  * 145454  
+ ID 18 Servicio: 20     puntos:  14
+   VALOR punto CALIDAD   4155.8285714286  =58181.6  /  14  
+ Servicio: 20, Categoria: Funcionario , Puntos  14  ValorCalidad  4155.8285714286  
+ Servicio: 20, Categoria: Laboral , Puntos    ValorCalidad  0  
+VALOR punto INICIATICA    1818.175  =29090.8 / 16  <BR> Servicio: 20, Categoria: Funcionario , Puntos  16  Valorinciativa  1818.175  
+ Servicio: 20, Categoria: Laboral , Puntos    Valorinciativa  0  
+ Servicio: 20, Categoria: Funcionario , Puntos  14  ValorAsistencia  1038.9571428571  
+ Servicio: 20, Categoria: Laboral , Puntos    ValorAsistencia  0  
+ Servicio: 20, Categoria: Funcionario , Puntos  16  ValorDisponibl  1818.175  
+ Servicio: 20, Categoria: Laboral , Puntos    ValorDisponibl  0  
+ Servicio: 20, Categoria: Funcionario , Puntos  14  ValorFormacion  2077.9142857143  
+ Servicio: 20, Categoria: Laboral , Puntos    ValorFormacion  0  
+
+ id  66  programa  20   nif 23213123A 
+
+ Escribir esta Nota en importes funcionarios:    29090.8   dias 2 
+
+ id  69  programa  20   nif 11111111Z 
+
+ Escribir esta Nota en importes funcionarios:    43636.2   dias 2 
+
+ id  69  programa  20   nif 13046753 
+
+ Escribir esta Nota en importes funcionarios:    43636.2   dias 2 
+
+ id  69  programa  20   nif 23213123A 
+
+ Escribir esta Nota en importes funcionarios:    43636.2   dias 2 
+
+ id  69  programa  20   nif 23213123A 
+
+ Escribir esta Nota en importes funcionarios:    43636.2   dias 2 
+
+ Servicio 19  Imp FUnc 2222  ImpLab  0  
+VALORES .... 888.8   444.4  222.2 444.4	444.4   
+VALOR CALIDAD   888.8  =  0.40  * 2222  
+ ID 18 Servicio: 19     puntos:  2
+   VALOR punto CALIDAD   444.4  =888.8  /  2  
+ Servicio: 19, Categoria: Funcionario , Puntos  2  ValorCalidad  444.4  
+ Servicio: 19, Categoria: Laboral , Puntos    ValorCalidad  0  
+VALOR punto INICIATICA    111.1  =444.4 / 4  <BR> Servicio: 19, Categoria: Funcionario , Puntos  4  Valorinciativa  111.1  
+ Servicio: 19, Categoria: Laboral , Puntos    Valorinciativa  0  
+ Servicio: 19, Categoria: Funcionario , Puntos  2  ValorAsistencia  111.1  
+ Servicio: 19, Categoria: Laboral , Puntos    ValorAsistencia  0  
+ Servicio: 19, Categoria: Funcionario , Puntos  4  ValorDisponibl  111.1  
+ Servicio: 19, Categoria: Laboral , Puntos    ValorDisponibl  0  
+ Servicio: 19, Categoria: Funcionario , Puntos  2  ValorFormacion  222.2  
+ Servicio: 19, Categoria: Laboral , Puntos    ValorFormacion  0  
+
+ id  67  programa  19   nif 23213123A 
+
+ Escribir esta Nota en importes funcionarios:    2444.2   dias 2 
+
+ id  68  programa  19   nif 21935933 
+
+ Escribir esta Nota en importes funcionarios:    3999.6   dias 2 
+
+ id  68  programa  19   nif 36421551 
+
+ Escribir esta Nota en importes funcionarios:    3999.6   dias 2 

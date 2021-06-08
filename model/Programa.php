@@ -1,7 +1,5 @@
   <?php
 	
-	use Clases\EntidadBase;
-	use Clases\CondicionFiltro;
 
   class Programa extends EntidadBase{
 	  private $table;
@@ -46,12 +44,12 @@
 		   $stmt->bindValue(':categoria', $this->categoria);
 		  
 		   $_SESSION['errMsg']['error'] = "Se ha guardado bien el nuevo programa";
-		   $_SESSION['errMsg']['color']= "alerta-correcto";
+		   $_SESSION['errMsg']['color']= "alert-success";
            $stmt->execute(); 
            return $this->db()->lastInsertID();
          } catch(PDOException $e) {
 		   $_SESSION['errMsg']['error'] = "No se ha podido guardar el programa";
-		   $_SESSION['errMsg']['color']= "alerta-error";
+		   $_SESSION['errMsg']['color']= "alert-danger";
         } 
 		   
 	  }
@@ -67,11 +65,11 @@
 		  $stmt->bindValue(':categoria', $this->categoria);
 		  $stmt->bindValue(':id',$this->id);
 		  $_SESSION['errMsg']['error'] = "Se ha actualizado bien el programa";
-		  $_SESSION['errMsg']['color']= "alerta-correcto";
+		  $_SESSION['errMsg']['color']= "alert-success";
 		  $stmt->execute();
 		} catch(PDOException $e) {
 			$_SESSION['errMsg']['error'] = "No se ha podido actualizar el programa";
-		    $_SESSION['errMsg']['color']= "alerta-error";
+		    $_SESSION['errMsg']['color']= "alert-danger";
         }
 	  }
   
@@ -109,21 +107,6 @@
 	  }
 
 
-	public function rellenar($cant){
-		
-			$faker = \Faker\Factory::create('es_ES');
-			for ($i = 0; $i < $cant; $i++) {
-				$nom = $faker->unique()->word();
-				$categoria = $faker->randomElement(['Funcionarios', 'Laborales']);;
-				$stmt=$this->db()->prepare("INSERT INTO programa (nombre,categoria)
-				VALUES(:nombre,:categoria);");
-				$stmt->bindValue(':nombre', $nom);
-				$stmt->bindValue(':categoria', $categoria);
-				
-				$stmt->execute(); 
-				
-			}
-    }
 
 
 	public function getbynombre($nombre){

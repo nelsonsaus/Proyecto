@@ -1,8 +1,5 @@
 <?php
 
-use Clases\EntidadBase;
-use Clases\CondicionFiltro;
-
 class Cuatrimestre extends EntidadBase{
     private $table;
     private $model;
@@ -102,12 +99,12 @@ class Cuatrimestre extends EntidadBase{
         $stmt->bindValue(':estado', $this->estado);
         
 		$_SESSION['errMsg']['error'] = "Se ha guardado bien el nuevo periodo";
-		$_SESSION['errMsg']['color']= "alerta-correcto";
+		$_SESSION['errMsg']['color']= "alert-success";
         $stmt->execute(); 
         return $this->db()->lastInsertID();
         } catch(PDOException $e) {
 			$_SESSION['errMsg']['error'] = "No se ha podido guardar el registro";
-			$_SESSION['errMsg']['color']= "alerta-error";
+			$_SESSION['errMsg']['color']= "alert-danger";
 		   // return $e->getCode();
         } 
     }
@@ -148,11 +145,11 @@ class Cuatrimestre extends EntidadBase{
 		$stmt->bindValue(':estado', $this->estado);
         $stmt->bindValue(':id',$this->id);
 		$_SESSION['errMsg']['error'] = "Se ha actualizado bien el período";
-		$_SESSION['errMsg']['color']= "alerta-correcto";
+		$_SESSION['errMsg']['color']= "alert-success";
         $stmt->execute();
 	  } catch(PDOException $e) {
 			$_SESSION['errMsg']['error'] = "No se ha podido actualizar el registro";
-		    $_SESSION['errMsg']['color']= "alerta-error";
+		    $_SESSION['errMsg']['color']= "alert-danger";
       }
     }
 	
@@ -229,6 +226,68 @@ class Cuatrimestre extends EntidadBase{
 		$stmt=$this->db()->query("SELECT Max(id_periodo) as id FROM programas_periodos;");
 
 		return $stmt->fetchColumn();
+	}
+
+
+	public function updateestado($est, $id){
+		$stmt=$this->db()->prepare("UPDATE cuatrimestre SET estado='$est' WHERE id='$id'");
+
+        $stmt->execute();
+	}
+
+
+
+	//actualiza la fecha, el año y el estado de ese periodo. Se utiliza al cerrar la productividad.
+	public function updateFECANEST($fecha, $anyo, $est, $id){
+		$stmt=$this->db()->prepare("UPDATE cuatrimestre SET fecha_concesion='$fecha', anyo='$anyo', estado='$est' WHERE id='$id'");
+
+        $stmt->execute();
+	}
+
+
+	public function getUltimoCerrado()
+	{
+		$stmt=$this->db()->prepare("SELECT * FROM cuatrimestre WHERE estado!='A' ORDER BY id DESC limit 1;");
+
+        $stmt->execute();
+        
+        $resultado=$stmt->fetchAll(PDO::FETCH_CLASS, $this->model);
+	    return  $resultado;
+	}
+
+
+
+	public function importesperiodos(){
+		$stmt=$this->db()->prepare("SELECT cantidad_calculada FROM cuatrimestre;");
+
+        $stmt->execute();
+        
+        $resultado=$stmt->fetchAll(PDO::FETCH_CLASS, $this->model);
+	    return  $resultado;
+	}
+	
+	public function getUltimoAbierto()
+	{
+		$stmt=$this->db()->prepare("SELECT * FROM cuatrimestre WHERE estado='A' ORDER BY id DESC limit 1;");
+
+        $stmt->execute();
+        
+        $resultado=$stmt->fetchAll(PDO::FETCH_CLASS, $this->model);
+	    return  $resultado;
+	}
+
+
+	public function getFirst(){
+
+		$stmt=$this->db()->prepare("SELECT * FROM cuatrimestre ORDER BY id ASC limit 1;");
+
+        $stmt->execute();
+		$resultSet=$stmt->fetchAll(PDO::FETCH_CLASS, $this->model);
+
+		if ($resultSet  ) {
+			return $resultSet[0];
+		}
+
 	}
 }
 

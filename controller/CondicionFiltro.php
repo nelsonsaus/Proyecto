@@ -1,8 +1,4 @@
 <?php
-
-namespace Clases;
-
-
 class CondicionFiltro{
 	const Igual=0;
 	const Contiene=1;

@@ -1,6 +1,4 @@
 <?php
-use Clases\ControladorBase;
-use Clases\CondicionFiltro;
 require_once "comun/Formatter.php";
 class ServicioController extends ControladorBase{
 
@@ -14,9 +12,11 @@ class ServicioController extends ControladorBase{
          
         //Creamos el objeto servicio
         $servicio=new Servicio();
-
         $programa=new Programa(); 
-		$trabajador=new Trabajador(); 
+		$trabajador=new Trabajador();
+        $conversaciones = new Conversaciones();
+
+        $totalmensajes = $conversaciones->NoLeidos($_SESSION["id"]);
         //Conseguimos todos los servicios de la pagina
 
         $page=1;
@@ -33,20 +33,27 @@ class ServicioController extends ControladorBase{
         }
 		// Añadimos este if si no hay pagina singleView y en cargarVista se añaden volver y operacion
 		$id=1; // se define para que no de error en "valor" => $id.
-        if (isset($_REQUEST["volvercontroller"])) {
-              $volver=array("controller" => $_REQUEST["volvercontroller"],
-              "action" => $_REQUEST["volveraction"],
-              "clave" => $_REQUEST["volverclave"],
-              "valor" => $_REQUEST["volvervalor"]
-                   );
-        }
-        else {
-             $volver=array("controller" => "servicio",
-             "action" => "index",
-              "clave" => "id",
-              "valor" => $id
-              );
-        }
+
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"],
+                        "clave" => "id",
+                        "valor" => $id
+                            );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                        $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                    "action" => $_REQUEST["volveraction"],
+                                    "clave" => $_REQUEST["volverclave"],
+                                    "valor" => $_REQUEST["volvervalor"]
+                                    );
+            }else {
+                $volver=array("controller" => "servicio",
+                 "action" => "index",
+                  "clave" => "id",
+                  "valor" => $id
+                  );
+            }
+
 		$id=1;
 		$page=1;
 		$filtro=null;
@@ -81,7 +88,8 @@ class ServicioController extends ControladorBase{
 			"count"=>$count,
             "filtro"=>$filtro,
             "page"=>$page,
-            "pagelimit"=>$servicio->pagelimit
+            "pagelimit"=>$servicio->pagelimit,
+            "totalmensajes" => $totalmensajes
 			
         ));
     }
@@ -90,20 +98,30 @@ class ServicioController extends ControladorBase{
     public function editar() {
         $servicio=new Servicio();
 		$programa=new Programa(); 
-        if (isset($_REQUEST["volvercontroller"])) {
-               $volver=array("controller" => $_REQUEST["volvercontroller"],
-                             "action" => $_REQUEST["volveraction"],
-                             "clave" => $_REQUEST["volverclave"],
-                             "valor" => $_REQUEST["volvervalor"]
-                           );
-        }
-        else {
-               $volver=array("controller" => $_REQUEST["controller"],
+        $conversaciones = new Conversaciones();
+
+        $totalmensajes = $conversaciones->NoLeidos($_SESSION["id"]);
+        
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"],
+                        "clave" => "id",
+                        "valor" => $_REQUEST["id"]
+                            );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                        $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                    "action" => $_REQUEST["volveraction"],
+                                    "clave" => $_REQUEST["volverclave"],
+                                    "valor" => $_REQUEST["volvervalor"]
+                                    );
+            }else {
+                $volver=array("controller" => $_REQUEST["controller"],
                              "action" => "editar",
                                 "clave" => "id",
                               "valor" => $_REQUEST["id"]
                            );
-        }
+            }
+
 		// Introducimos esta línea
 		$page=1;
 
@@ -140,32 +158,50 @@ class ServicioController extends ControladorBase{
                  "pagelimit"=>$programa->pagelimit,
                  "service"=>$service,
                  "volver"=>$volver,
-                    "operacion"=>"editar"
+                    "operacion"=>"editar",
+                    "totalmensajes" => $totalmensajes
         ));
     }
     public function nuevo() {
+
+
         $servicio=new Servicio();
         $servicio=new Servicio();
-        if (isset($_REQUEST["volvercontroller"])) {
-               $volver=array("controller" => $_REQUEST["volvercontroller"],
-                             "action" => $_REQUEST["volveraction"],
-                             "clave" => $_REQUEST["volverclave"],
-                             "valor" => $_REQUEST["volvervalor"]
-                           );
-        }
-        else {
-               $volver=array("controller" => $_REQUEST["controller"],
-                             "action" => "index"
-                           );
-       }
+        $conversaciones = new Conversaciones();
+
+        $totalmensajes = $conversaciones->NoLeidos($_SESSION["id"]);
+
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"]
+                            );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                        $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                    "action" => $_REQUEST["volveraction"],
+                                    "clave" => $_REQUEST["volverclave"],
+                                    "valor" => $_REQUEST["volvervalor"]
+                                    );
+            }else {
+                $volver=array("controller" => $_REQUEST["controller"],
+                                 "action" => "index"
+                               );
+            }
+
         $this->cargarVista("servicio/single",array(
                  "volver"=>$volver,
-                    "operacion"=>"nuevo"
+                    "operacion"=>"nuevo",
+                    "totalmensajes" => $totalmensajes
         ));
     }
 
     public function actualizar() {
         if(isset($_REQUEST["id"])){
+
+            $f = fopen("actividad.txt", "a");
+            fwrite($f, "Servicio Actualizar ". $_SESSION["nombre"]. " ".date("j F Y h:i:sa"). " ".$_REQUEST["id"] . "\n");
+            fclose($f);
+
+
             $formatter=new Formatter();
             $servicio=new Servicio();
             $servicio->setId($_REQUEST["id"]);
@@ -175,24 +211,32 @@ class ServicioController extends ControladorBase{
 			$servicio->setId_programa_lab(($_REQUEST["programa-lab"]!='')?($_REQUEST["programa-lab"]):null);
             $save=$servicio->updateById();
         }
-        if (isset($_REQUEST["volvercontroller"])) {
-              $volver=array("controller" => $_REQUEST["volvercontroller"],
-              "action" => $_REQUEST["volveraction"],
-              "clave" => $_REQUEST["volverclave"],
-              "valor" => $_REQUEST["volvervalor"]
-                   );
+        
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"]
+                            );
+        }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                        $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                    "action" => $_REQUEST["volveraction"],
+                                    "clave" => $_REQUEST["volverclave"],
+                                    "valor" => $_REQUEST["volvervalor"]
+                                    );
+        }else {
+            $volver=array("controller" => $_REQUEST["controller"],
+                "action" => "index"
+             );
         }
-        else {
-             $volver=array("controller" => $_REQUEST["controller"],
-             "action" => "index"
-              );
-        }
+
         $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
 
     }
 
     public function crear(){
         if(isset($_REQUEST["nombre"])){
+
+
+
             $formatter=new Formatter();
              
             //Creamos un servicio
@@ -203,22 +247,33 @@ class ServicioController extends ControladorBase{
 			$servicio->setId_programa_lab(($_REQUEST["programa-lab"]!='')?($_REQUEST["programa-lab"]):null);
 			
 		    $id=$servicio->save();
+
+            $f = fopen("actividad.txt", "a");
+            fwrite($f, "Servicio Crear ". $_SESSION["nombre"]. " ".date("j F Y h:i:sa"). " ".$id . "\n");
+            fclose($f);
 	  }
-        if (isset($_REQUEST["volvercontroller"])) {
-              $volver=array("controller" => $_REQUEST["volvercontroller"],
-              "action" => $_REQUEST["volveraction"],
-              "clave" => $_REQUEST["volverclave"],
-              "valor" => $_REQUEST["volvervalor"]
-                   );
-        }
-        else {
-             $volver=array("controller" => $_REQUEST["controller"],
+        
+      if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"],
+                        "clave" => "id",
+                        "valor" => $id
+                            );
+        }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                        $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                    "action" => $_REQUEST["volveraction"],
+                                    "clave" => $_REQUEST["volverclave"],
+                                    "valor" => $_REQUEST["volvervalor"]
+                                    );
+        }else {
+            $volver=array("controller" => $_REQUEST["controller"],
 			  "action" => "index",
            // "action" => "editar",
               "clave" => "id",
               "valor" => $id
               );
         }
+
 		//	echo "id " . $volver["valor"] . " nombre " . $volver["action"] ;
         
        $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
@@ -227,23 +282,33 @@ class ServicioController extends ControladorBase{
      
     public function borrar(){
         if(isset($_REQUEST["id"])){ 
+
+            $f = fopen("actividad.txt", "a");
+            fwrite($f, "Servicio Borrar ". $_SESSION["nombre"]. " ".date("j F Y h:i:sa"). " ".$_REQUEST["id"] . "\n");
+            fclose($f);
+
             $id=(int)$_REQUEST["id"];
             $servicio=new Servicio();
              
             $servicio->deleteById($id); 
         }
-         if (isset($_REQUEST["volvercontroller"])) {
-               $volver=array("controller" => $_REQUEST["volvercontroller"],
-                    "action" => $_REQUEST["volveraction"],
-                    "clave" => $_REQUEST["volverclave"],
-                    "valor" => $_REQUEST["volvervalor"]
-                     );
-         }
-         else {
+         
+        
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                        "action" => $_REQUEST["volveraction"]
+                            );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                                        "action" => $_REQUEST["volveraction"],
+                                        "clave" => $_REQUEST["volverclave"],
+                                        "valor" => $_REQUEST["volvervalor"]
+                                        );
+            }else {
                 $volver=array("controller" => $_REQUEST["controller"],
-                "action" => "index"
-                 );
-       }
+                        "action" => "index"
+                        );
+            }
 
         $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
     }

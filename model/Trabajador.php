@@ -1,8 +1,5 @@
 <?php
 
-use Clases\EntidadBase;
-use Clases\CondicionFiltro;
-
 class Trabajador extends EntidadBase{
     private $table;
     private $model;
@@ -102,7 +99,7 @@ class Trabajador extends EntidadBase{
         	$stmt->execute();
 	//	} catch(PDOException $e) {
        //     $_SESSION['errMsg']['error'] = "No se ha podido dar de baja el usuario";
-		//	$_SESSION['errMsg']['color']= "alerta-error";
+		//	$_SESSION['errMsg']['color']= "alert-danger";
       //  }
       //  return $this->db()->lastInsertID();
          
@@ -143,11 +140,11 @@ class Trabajador extends EntidadBase{
         $stmt->bindValue(':telefono', $this->telefono);
         $stmt->bindValue(':imagen', $this->imagen);
 		$_SESSION['errMsg']['error'] = "Usuario modificado correctamente";
-		$_SESSION['errMsg']['color']= "alerta-correcto";
+		$_SESSION['errMsg']['color']= "alert-success";
         $stmt->execute();
 		} catch(PDOException $e) {
             $_SESSION['errMsg']['error'] = "No se ha podido modificar el usuario";
-			$_SESSION['errMsg']['color']= "alerta-error";
+			$_SESSION['errMsg']['color']= "alert-danger";
         }
     }
 	
@@ -161,11 +158,11 @@ class Trabajador extends EntidadBase{
             $stmt->bindValue(':activo', $this->activo);
 			$stmt->bindValue(':fecha_baja', $this->fecha_baja);
             $_SESSION['errMsg']['error'] = "Usuario dado de baja";
-			$_SESSION['errMsg']['color']= "alerta-correcto";
+			$_SESSION['errMsg']['color']= "alert-success";
 			$stmt->execute();
 		} catch(PDOException $e) {
             $_SESSION['errMsg']['error'] = "No se ha podido dar de baja el usuario";
-			$_SESSION['errMsg']['color']= "alerta-error";
+			$_SESSION['errMsg']['color']= "alert-danger";
         }
     }
 	
@@ -212,7 +209,7 @@ class Trabajador extends EntidadBase{
 		if ($filter != null ) {
 		//	$query="SELECT nif,trabajador.nombre AS nombre_trabajador,apellidos,sexo,email,fecha_nacimiento,activo,productividad,categoria,puesto,fecha_alta,fecha_baja,centro,telefono,imagen,servicio.nombre AS nombre_servicio,servicio.id AS id
 		//		FROM trabajador,servicio,puesto";
-		    $query="SELECT trabajador.nif, id_servicio, trabajador.nombre, trabajador.apellidos, trabajador.productividad, categoria, trabajador.fecha_alta, trabajador.fecha_baja, trabajadores_servicios.activo, id_programa_func, id_programa_lab
+		    $query="SELECT trabajador.nif, id_servicio, trabajadores_servicios.id_servicio_evalua, trabajador.nombre, trabajador.apellidos, trabajador.productividad, categoria, trabajadores_servicios.fecha_alta, trabajadores_servicios.fecha_baja, trabajadores_servicios.activo, id_programa_func, id_programa_lab
 FROM (trabajador INNER JOIN trabajadores_servicios ON trabajador.nif = trabajadores_servicios.nif) INNER JOIN servicio ON trabajadores_servicios.id_servicio = servicio.id
 WHERE (((trabajador.productividad)='Si') AND ((trabajadores_servicios.activo)='Si'))";
 			$bindparams=array();
@@ -241,7 +238,7 @@ WHERE (((trabajador.productividad)='Si') AND ((trabajadores_servicios.activo)='S
 			$query=$query." ORDER BY $ordercol $order";
 			} else {
 
-	     $query="SELECT trabajador.nif, id_servicio, trabajador.nombre, trabajador.apellidos, trabajador.productividad, categoria, trabajador.fecha_alta, trabajador.fecha_baja, trabajadores_servicios.activo, id_programa_func, id_programa_lab
+	     $query="SELECT trabajador.nif, id_servicio, trabajadores_servicios.id_servicio_evalua, trabajador.nombre, trabajador.apellidos, trabajador.productividad, categoria, trabajadores_servicios.fecha_alta, trabajadores_servicios.fecha_baja, trabajadores_servicios.activo, id_programa_func, id_programa_lab
 FROM (trabajador INNER JOIN trabajadores_servicios ON trabajador.nif = trabajadores_servicios.nif) INNER JOIN servicio ON trabajadores_servicios.id_servicio = servicio.id
 WHERE (((trabajador.productividad)='Si') AND ((trabajadores_servicios.activo)='Si'))
 ORDER BY $ordercol $order";
@@ -428,6 +425,23 @@ ORDER BY $ordercol $order";
 	    return $resultado; 
 	}
     
+
+
+
+
+
+    //para obtener la categoría del funcionario:
+
+	public function getcategbynif($nif){
+		$stmt=$this->db()->prepare("SELECT categoria FROM Trabajador WHERE nif='$nif' ");
+
+        $stmt->execute();
+        
+        $resultado=$stmt->fetchColumn();
+	    return $resultado; 
+	}
+
+
 }
 
 ?>

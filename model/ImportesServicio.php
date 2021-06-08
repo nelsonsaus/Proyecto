@@ -1,18 +1,16 @@
 <?php
-
-use Clases\EntidadBase;
-
 class ImportesServicios extends EntidadBase{
     private $table;
     private $model;
 
     public $id;
-	public $id_periodo;
+    public $id_periodo;
     public $id_servicio;
     public $numero_funcionarios;
     public $numero_laborales;
- 	public $importe;
-	
+    public $importe_asignado_func;
+    public $importe_asignado_lab;
+
      
     public function __construct(){
         $this->table="importes_servicios";
@@ -36,19 +34,21 @@ class ImportesServicios extends EntidadBase{
     public function setId_servicio($id_servicio) { $this->id_servicio = $id_servicio; }
     public function setNumero_funcionarios($numero_funcionarios) { $this->numero_funcionarios = $numero_funcionarios; }
 	public function setNumero_laborales($numero_laborales) { $this->numero_laborales = $numero_laborales; }
-	public function setImporte($importe) { $this->importe = $importe; }
-
+	public function setImporteFunc($importe_asignado_func) { $this->importe_asignado_func = $importe_asignado_func; }
+    public function setImporteLab($importe_asignado_lab) { $this->importe_asignado_lab = $importe_asignado_lab; }
     
 	
 	public function save(){
-        $stmt=$this->db()->prepare("INSERT INTO importes_servicios ( id_periodo, id_servicio, numero_funcionarios, numero_laborales, importe )
-                VALUES(:id_periodo, :id_servicio, :numero_funcionarios, :numero_laborales, :importe);");
+        $stmt=$this->db()->prepare("INSERT INTO importes_servicios ( id_periodo, id_servicio, numero_funcionarios, numero_laborales, importe_asignado_func, importe_asignado_lab )
+        VALUES(:id_periodo, :id_servicio, :numero_funcionarios, :numero_laborales, :importe_asignado_func, :importe_asignado_lab);");
 
         $stmt->bindValue(':id_periodo', $this->id_periodo);
         $stmt->bindValue(':id_servicio', $this->id_servicio);
         $stmt->bindValue(':numero_funcionarios', $this->numero_funcionarios);
         $stmt->bindValue(':numero_laborales', $this->numero_laborales);
-        $stmt->bindValue(':importe', $this->importe);
+        $stmt->bindValue(':importe_asignado_func', $this->importe_asignado_func);
+        $stmt->bindValue(':importe_asignado_lab', $this->importe_asignado_lab);
+
         $stmt->execute(); 
         return $this->db()->lastInsertID();
          
@@ -137,7 +137,28 @@ class ImportesServicios extends EntidadBase{
      
          	
     }
+
+
+
+
+    //para cuando vayamos a borrar un registro que dependa del periodo y del servicio como es el caso de productividad.
+    public function deleteByPer($per){
+
+        $stmt=$this->db()->prepare("DELETE FROM importes_servicios WHERE id_periodo='$per'");
+
+		$stmt->execute();
+
+    }
 	
+
+
+    public function getByPer($id){
+        $stmt = $this->db()->prepare("SELECT * FROM importes_servicios WHERE id_periodo='$id'");
+		$stmt->execute();
+
+        $resultado=$stmt->fetchAll(PDO::FETCH_CLASS, $this->model);
+        return $resultado;
+    }
 
 
 

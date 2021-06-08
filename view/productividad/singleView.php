@@ -4,45 +4,29 @@
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <title>Productividad - Trabajador - edit</title>
-      <!-- Tell the browser to be responsive to screen width -->
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <!-- Font Awesome -->
       <link rel="stylesheet" href="view/plugins/fontawesome-free/css/all.min.css">
-      <!-- Ionicons -->
-      <link rel="stylesheet" href="view/css/ionicons.min.css">
-      <!-- overlayScrollbars -->
-      <link rel="stylesheet" href="view/css/adminlte.min.css">
-      <!-- datepicker -->
-      <link href="view/css/datepicker.min.css" rel="stylesheet">
-      <!-- iCheck for checkboxes and radio inputs -->
-      <link rel="stylesheet" href="view/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-      <!-- Google Font: Source Sans Pro -->
-      <link href="view/css/googlefonts.css" rel="stylesheet">
-      <!-- Google Font: Source Sans Pro -->
-      <link href="view/css/xtrastyles.css" rel="stylesheet">
-      <link rel="apple-touch-icon" sizes="180x180" href="view/imagenes/apple-icon.png">
-      <link rel="icon" type="image/png" sizes="32x32" href="view/imagenes/favicon-32x32.png">
-      <link rel="icon" type="image/png" sizes="16x16" href="view/imagenes/favicon-16x16.png">
-      <link rel="shortcut icon" href="view/imagenes/favicon.ico">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+   
+
+      <style>
+         .elementoside:hover{
+            background-color:black;
+        }
+
+
+        .enlacesside:hover{
+            background-color:#2b2b2b;
+        }
+      </style>
+
    </head>
-   <body class="hold-transition sidebar-mini">
-      <!-- Site wrapper -->
-      <div class="wrapper">
-      <!-- Navbar -->
-      <?php require_once 'view/comun/leftnavbar.php'; ?>
-      <!-- /.navbar -->
-      <!-- Main Sidebar Container -->
-      <?php require_once 'view/comun/sidebar.php'; ?>
-      <!-- Content Wrapper. Contains page content -->
-      <div class="content-wrapper">
-         <!-- Content Header (Page header) -->
-         <section>
-            <div class="row wrapper white-bg page-heading">
-               <div class="col-lg-12">
-                  <h3 style="color: #2F4050; margin-bottom: 18px; margin-top: 18px; margin-left: 12px"> Productividad</h3>
-               </div>
-            </div>
-            <div class="wrapper wrapper-content animated fadeIn">
+   <body style="background-color:#1e0645">
+
+            <?php require_once 'view/comun/leftnavbar.php'; ?>
+            <?php require_once 'view/comun/sidebar.php'; ?>
+
+
                <?php   
                   if (isset($_SESSION['errMsg'])) {
                        ?>
@@ -59,72 +43,199 @@
                   $entidad="trabajador";
                   
                   ?>
+
+
+
+
+            <div id="contenedortodo" class="row" style="padding-top:100px;">
                <div class="col-md-12">
-                  <div class="ibox float-e-margins">
                      <!-- Titulo -->
-                     <div class="ibox-title">
+                     <div style="background-color: rgb(14, 0, 36); width:80%; float:right; color:white; border-radius:40px; margin-bottom:60px; height:70px;">
                         <?php 
-                              $texto_submit="Modificar"; 
-							  $destino="actualizar2"; ?>
-                        <h5>Editar registro</h5>
+                              if($operacion!="nuevo"){
+                                 $texto_submit="Modificar";
+                                 $destino="actualizar2";
+                              }
+                              else{
+                                 $texto_submit="Crear";
+                                 $destino="crear";
+                              }
+							   ?>
+                        <?php if($operacion=="nuevo"){
+                           echo "<h3 style='text-align:center; padding-top:15px;'>Nuevo Registro</h3>";
+                        }else{ ?>
+                        <h3 style="text-align:center; padding-top:15px;">Editar registro</h3>
+                        <?php } ?>
                      </div>
                      
                      <!-- Contenido principal -->
-                     <div class="ibox-content" id="ibox_form">
+                     <div style="width:80%; float:right; background-color: rgba(14, 0, 36, 0.7); color:white; border-radius:22px; padding:30px; margin-top:20px; margin-bottom:100px;">
                         <!--Si el destino es actualizar entonces enviaremos por url lo de volverclave y volvervalor sino no. Ya que habria problemas
                         Al crear un trabajador nuevo.-->
-                        <form class="form-horizontal" id="formulario-usuario" action="<?php echo $helper->url("productividad",$destino); ?>" method="post" class="col-lg-5" enctype="multipart/form-data">
+                        <form class="form-horizontal" id="formulario-usuario" action="<?php echo $helper->url("productividad",$destino); ?>" method="post" class="col-lg-5" enctype="multipart/form-data" autocomplete="off">
                            <?php	if ($operacion == "editar") { 	?>
                               <input type="hidden" name="nif" value="<?php echo $worker->nif; ?>">
                               <input type="hidden" name="idt" value="<?php echo $_GET["id"]; ?>">
+                              <input type="hidden" name="idp" value="<?php echo $productivity->id_periodo; ?>">
+                           <?php }else{ ?>
+                              <input type="hidden" name="idp" value="<?php echo $_GET["id"]; ?>">
                            <?php } ?>
-                           <div class="form-group row">
-                              <label  class="col-sm-3 col-form-label">Servicio</label>
-                              <div class="col-sm-9">
-                                 <select id="ns-servicio" name="ns-servicio" class="form-control">
-                                       <?php  	
-                                          foreach($allservers as $servicio) { ?> 
-                                             <?php if($servicio->nombre == $nombre_servicio){ ?>
-                                                <option  value="<?php echo $servicio->id; ?>" selected> <?php  echo $servicio->nombre; ?> </option>
-                                             <?php }else{ ?>
-                                                <option  value="<?php echo $servicio->id; ?>"   > <?php  echo $servicio->nombre; ?> </option>
-                                             <?php } ?>
-                                       <?php } ?>    
-                                 </select>
-                              </div>
-                           </div>
 
 
-
-                           <div class="form-group row">
-                              <label  class="col-sm-3 col-form-label">Servicio Evaluable</label>
-                              <div class="col-sm-9">
-                                 <select id="ns-servicio" name="ns-servicioeva" class="form-control">
-                                       <?php  	
-                                          foreach($allservers as $servicio) { ?> 
-                                             <?php if($servicio->nombre == $productivity->serv_eval){ ?>
-                                                <option  value="<?php echo $servicio->id; ?>" selected> <?php  echo $servicio->nombre; ?> </option>
-                                             <?php }else{ ?>
-                                                <option  value="<?php echo $servicio->id; ?>"   > <?php  echo $servicio->nombre; ?> </option>
-                                             <?php } ?>
-                                       <?php } ?>    
-                                 </select>
-                              </div>
-                           </div>
-
-                           <div class="form-group row">
-                                    <label class="col-sm-3 control-label" for="fecha-alta">Fecha Alta</label>
-                                    <div class="col-sm-8">
-                                       <input type="text" value="<?php if (isset($worker)){ echo $formatter->formatterFecha->fromMysqlDateformat($worker->fecha_alta);} ?>" id="ifalta"  name="fecalta" class="form-control datepicker" datepicker data-date-format="dd/mm/yyyy" data-auto-close="true">
+                           <div class="row">
+                               <!-- Primera columna -->
+                              <div class="col-md-6 col-sm-12">
+                                 <?php if($operacion=="nuevo"){ ?>
+                                    <div class="form-group row">
+                                       <label  class="col-sm-3 col-form-label">Trabajador</label>
+                                       <div class="col-sm-9">
+                                          <select id="niftrabajador" name="niftrabajador" class="form-control">
+                                                <?php  	
+                                                   foreach($alltrabajadores as $trabajador) { ?> 
+                                                         <option  value="<?php echo $trabajador->nif; ?>"   > <?php  echo $trabajador->nombre . " " . $trabajador->apellidos; ?> </option>
+                                                <?php } ?>    
+                                          </select>
+                                       </div>
                                     </div>
+                                 <?php } ?>
+
+
+
+
+                                 <div class="form-group row">
+                                    <label  class="col-sm-3 col-form-label">Servicio</label>
+                                    <div class="col-sm-9">
+                                       <select id="ns-servicio" name="ns-servicio" class="form-control">
+                                             <?php  	
+                                                foreach($allservers as $servicio) { ?> 
+                                                   <?php if($servicio->nombre == $nombre_servicio){ ?>
+                                                      <option  value="<?php echo $servicio->id; ?>" selected> <?php  echo $servicio->nombre; ?> </option>
+                                                   <?php }else{ ?>
+                                                      <option  value="<?php echo $servicio->id; ?>"   > <?php  echo $servicio->nombre; ?> </option>
+                                                   <?php } ?>
+                                             <?php } ?>    
+                                       </select>
+                                    </div>
+                                 </div>
+
+
+
+                                 <div class="form-group row">
+                                    <label  class="col-sm-3 col-form-label">Servicio Evaluable</label>
+                                    <div class="col-sm-9">
+                                       <select id="ns-servicio" name="ns-servicioeva" class="form-control">
+                                             <?php  	
+                                                foreach($allservers as $servicio) { ?> 
+                                                   <?php if($servicio->nombre == $productivity->serv_eval){ ?>
+                                                      <option  value="<?php echo $servicio->id; ?>" selected> <?php  echo $servicio->nombre; ?> </option>
+                                                   <?php }else{ ?>
+                                                      <option  value="<?php echo $servicio->id; ?>"   > <?php  echo $servicio->nombre; ?> </option>
+                                                   <?php } ?>
+                                             <?php } ?>    
+                                       </select>
+                                    </div>
+                                 </div>
+
+                                 <div class="form-group row">
+                                    <label  class="col-sm-3 col-form-label">Programa</label>
+                                    <div class="col-sm-9">
+                                       <select id="programa" name="programa" class="form-control">
+                                             <?php  	
+                                                foreach($allprogramas as $programa) { ?> 
+                                                   <?php if($programa->nombre == $nombre_programa){ ?>
+                                                      <option  value="<?php echo $programa->id; ?>" selected> <?php  echo $programa->nombre; ?> </option>
+                                                   <?php }else{ ?>
+                                                      <option  value="<?php echo $programa->id; ?>"   > <?php  echo $programa->nombre; ?> </option>
+                                                   <?php } ?>
+                                             <?php } ?>    
+                                       </select>
+                                    </div>
+                                 </div>
+
+
+                                 <div class="form-group row">
+                                    <label class="col-sm-3 control-label" for="fecha-alta">Fecha Alta</label>
+                                       <div class="col-sm-8">
+                                          <input type="text" value="<?php if (isset($worker)){ echo $formatter->formatterFecha->fromMysqlDateformat($productivity->fecha_alta);} ?>" id="ifalta"  name="fecalta" class="form-control datepicker" datepicker data-date-format="dd/mm/yyyy" data-auto-close="true">
+                                       </div>
                                  </div>
                                  <div class="form-group row">
                                     <label class="col-sm-3 control-label" for="fbaja">Fecha Baja</label>
-                                    <div class="col-sm-8">
-                                       <input type="text" value="<?php if (isset($worker)){ echo $formatter->formatterFecha->fromMysqlDateformat($worker->fecha_baja);} ?>" id="ifbaja"  name="fecbaja" class="form-control datepicker" datepicker data-date-format="dd/mm/yyyy" data-auto-close="true">
-                                    </div>
+                                       <div class="col-sm-8">
+                                          <input type="text" value="<?php if (isset($worker)){ echo $formatter->formatterFecha->fromMysqlDateformat($productivity->fecha_baja);} ?>" id="ifbaja"  name="fecbaja" class="form-control datepicker" datepicker data-date-format="dd/mm/yyyy" data-auto-close="true">
+                                       </div>
                                  </div>
                            </div>
+                           <div class="col-md-6 col-sm-12" style="padding-left:200px;">
+                              <div class="form-group row">
+                                             <label class="col-sm-3 control-label" for="p_calidad">Calidad</label>
+                                             <div class="col-lg-4">
+                                                <input type="text" min="0" max="2" id="ip_calidad" name="p_calidad" value="<?php if($operacion!="nuevo") echo $productivity->puntuacion_calidad;?>" class="form-control">
+                                             </div>
+                                          </div>
+                           
+                                          <div class="form-group row">
+                                             <label class="col-sm-3 control-label" for="p_iniciativa">Iniciativa</label>
+                                             <div class="col-lg-4">
+                                                <input type="text" min="0" max="2" step="any" id="ip_iniciativa" name="p_iniciativa" value="<?php if($operacion!="nuevo") echo $productivity->puntuacion_iniciativa;?>" class="form-control">
+                                             </div>
+                                          </div>
+                                          
+                                          <div class="form-group row">
+                                             <label class="col-sm-3 control-label" for="p_asistencia">Asistencia</label>
+                                             <div class="col-lg-4">
+                                                <input type="text" min="0" max="2" id="ip_asistencia" name="p_asistencia" value="<?php if($operacion!="nuevo") echo $productivity->puntuacion_asistencia?>" class="form-control">
+                                             </div>
+                                          </div>
+                                          
+                                          <div class="form-group row">
+                                             <label class="col-sm-3 control-label" for="p_disponibilidad">Disponibilidad</label>
+                                             <div class="col-lg-4">
+                                                <input type="text" min="0" max="2" id="ip_disponibilidad" name="p_disponibilidad" value="<?php if($operacion!="nuevo") echo $productivity->puntuacion_disponibilidad?>" class="form-control">
+                                             </div>
+                                          </div>
+                                          
+                                          <div class="form-group row">
+                                             <label class="col-sm-3 control-label" for="p_formacion">Formación</label>
+                                             <div class="col-lg-4">
+                                                <input type="text" min="0" max="2" id="ip_formacion" name="p_formacion" value="<?php if($operacion!="nuevo") echo $productivity->puntuacion_formacion?>" class="form-control">
+                                             </div>
+                                          </div>
+
+
+                                          <?php if($operacion!="nuevo"){ ?>
+                                             <div class="form-group row">
+                                                <label class="col-sm-3 control-label" for="dias_tr">Dias trabajados</label>
+                                                <div class="col-lg-4">
+                                                   <input type="text" id="dias_tr" name="dias_tr" value="<?php echo $productivity->dias_trabajados; ?>" class="form-control">
+                                                </div>
+                                             </div>
+                                          <?php } ?>
+
+
+
+                                          <div class="form-group row">
+                                             <label class="col-sm-3 control-label" for="importe">Importe</label>
+                                             <div class="col-lg-4">
+                                                <input type="text" id="importe" name="importe" value="<?php if($operacion!="nuevo") echo $productivity->importe?>" class="form-control">
+                                             </div>
+                                          </div>
+
+
+
+
+                                          <div class="form-group row">
+                                             <label class="col-sm-3 control-label" for="porcentaje">Porcentaje</label>
+                                             <div class="col-lg-4">
+                                                <input type="text" id="porcentaje" name="porcentaje" value="<?php if($operacion!="nuevo") echo $productivity->porcentaje?>" class="form-control">
+                                             </div>
+                                          </div>
+                                 </div>
+                              </div>
+
+
+
+                     
 
 
 
@@ -143,7 +254,7 @@
                                        <?php if ($operacion == "editar" ) { ?>
 
                                        <?php } ?>
-                                       <a href="index.php?controller=productividad&action=index" class="btn btn-default">Volver</a>
+                                       <a href="index.php?controller=productividad&action=index" class="btn btn-default" style="border:3px solid #0069D9">Volver</a>
                                     </div>
                                     <!-- /.col-md-offset-2 col-lg-10 -->
                                  </div>
@@ -160,31 +271,94 @@
                   <!-- /.ibox -->
                </div>
                <!-- /.col-md-12 -->
-              
-         </section>
-         </div>
-         <!-- /.content-wrapper -->
-         <?php require_once 'view/comun/footer.php'; ?>
-      </div>
-      <!-- ./wrapper -->
-      <!-- jQuery -->
-      <script src="view/plugins/jquery/jquery.min.js"></script>
-      <!-- Bootstrap 4 -->
-      <script src="view/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <script type="text/javascript" src="view/js/datepicker.min.js"></script>
-      <!-- Bootstrap Switch -->
-      <script src="view/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
-      <!-- AdminLTE App -->
-      <script src="view/js/adminlte.min.js"></script>
-      <!-- AdminLTE for demo purposes -->
-      <script src="view/dist/js/demo.js"></script>
-      <!-- jquery-validation -->
-      <script src="view/plugins/jquery-validation/jquery.validate.min.js"></script>
-      <!--  mensajes en español -->
-      <script type="text/javascript" src="view/js/messajes_es.js"></script>
+            </div>
+
+
       
-      <script src="view/plugins/jquery-validation/additional-methods.min.js"></script>
       
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+        integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+        crossorigin="anonymous">
+    </script>
+
+
+<script>
+
+var contadordelside = 0;
+var contadordelside2 = 0;
+var contadordisplayside = 1;
+
+function sideclick(){
+
+    contadordelside++;
+
+
+    let div = document.getElementById("divside");
+
+
+    if(contadordelside%2==0){
+        div.style="display:none;"
+    }else{
+        div.style="display:block; height:130px; width:100%;margin:auto;text-align:center;";
+    }
+
+}
+
+
+function sideclick2(){
+
+    contadordelside2++;
+
+
+    let div = document.getElementById("divside2");
+
+
+    if(contadordelside2%2==0){
+        div.style="display:none;"
+    }else{
+        div.style="display:block; height:130px; width:100%;margin:auto;text-align:center;";
+    }
+
+}
+
+
+function hamburguer(){
+
+    contadordisplayside++;
+
+    let side = document.getElementById("sidebar");
+
+    let contenedortodo = document.getElementById("contenedortodo");
+
+    let topbar = document.getElementById("topbar");
+
+    if(contadordisplayside%2==0){
+        side.style="display:none;";
+        contenedortodo.style="margin-left:0px;";
+        topbar.style="position:fixed;z-index:22;background-color:#1c1c1c;margin-left:0%;height:60px;width:100%;";
+    }else{
+        side.style="position:fixed;top:0%;z-index:60;margin-top:0; width:15%; height:710px; overflow:hidden; background-color:#1c1c1c;";
+        contenedortodo.style="padding-top:100px;";
+        topbar.style="position:fixed;z-index:22;background-color:#1c1c1c;margin-left:15%;height:60px;width:100%;";
+        
+    }
+
+
+}
+
+
+
+</script>
+
+    
       <script type="text/javascript">
          $(document).ready(function () {
 			 

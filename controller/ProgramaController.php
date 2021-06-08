@@ -1,6 +1,4 @@
 <?php
-use Clases\ControladorBase;
-use Clases\CondicionFiltro;
 require_once "comun/Formatter.php";
 class ProgramaController extends ControladorBase{
 
@@ -14,8 +12,9 @@ class ProgramaController extends ControladorBase{
          
         //Creamos el objeto programa
         $programa=new Programa();
-        if($programa->getAllCount()==0)
-            $programa->rellenar(5);
+        $conversaciones = new Conversaciones();
+
+        $totalmensajes = $conversaciones->NoLeidos($_SESSION["id"]);
          
         //Conseguimos todos los programas de la pagina
 
@@ -33,20 +32,28 @@ class ProgramaController extends ControladorBase{
         }
 		
 		$id=1;
-		if (isset($_REQUEST["volvercontroller"])) {
-               $volver=array("controller" => $_REQUEST["volvercontroller"],
+		if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                         "action" => $_REQUEST["volveraction"],
+                         "clave" => "id",
+                        "valor" => $id
+        
+                        );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                $volver=array("controller" => $_REQUEST["volvercontroller"],
                             "action" => $_REQUEST["volveraction"],
-							"clave" => $_REQUEST["volverclave"],
+                            "clave" => $_REQUEST["volverclave"],
                             "valor" => $_REQUEST["volvervalor"]
-                           );
-        }
-        else {
-               $volver=array("controller" => "programa",
-                            "action" => "index",
-                            "clave" => "id",
-                            "valor" => $id
-                           );
-		}				   
+                            );
+            }else {
+                $volver=array("controller" => "programa",
+                                "action" => "index",
+                                "clave" => "id",
+                                "valor" => $id
+        
+                            );
+            }
+
         $allprograms=$programa->getAll("id","ASC",$programa->pagelimit,($page-1)*$programa->pagelimit,$filtro);
 		//$allprogramas=$programa->getAllProg("id","ASC",$programa->pagelimit,($page-1)*$programa->pagelimit,$filtro);
         $count=$programa->getAllCount($filtro);
@@ -64,7 +71,8 @@ class ProgramaController extends ControladorBase{
             "page"=>$page,
             "pagelimit"=>$programa->pagelimit,
 			"volver"=>$volver,
-            "operacion"=>"nuevo"
+            "operacion"=>"nuevo",
+            "totalmensajes" => $totalmensajes
 			
         ));
 	
@@ -73,20 +81,32 @@ class ProgramaController extends ControladorBase{
      
     public function editar() {
         $programa=new Programa();
-        if (isset($_REQUEST["volvercontroller"])) {
-               $volver=array("controller" => $_REQUEST["volvercontroller"],
-                             "action" => $_REQUEST["volveraction"],
-                             "clave" => $_REQUEST["volverclave"],
-                             "valor" => $_REQUEST["volvervalor"]
-                           );
-        }
-        else {
-               $volver=array("controller" => $_REQUEST["controller"],
-                             "action" => "editar",
-                             "clave" => "id",
-                             "valor" => $_REQUEST["id"]
-                           );
-        }
+        $conversaciones = new Conversaciones();
+
+        $totalmensajes = $conversaciones->NoLeidos($_SESSION["id"]);
+
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                         "action" => $_REQUEST["volveraction"],
+                         "clave" => "id",
+                        "valor" => $_REQUEST["id"]
+        
+                        );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                $volver=array("controller" => $_REQUEST["volvercontroller"],
+                            "action" => $_REQUEST["volveraction"],
+                            "clave" => $_REQUEST["volverclave"],
+                            "valor" => $_REQUEST["volvervalor"]
+                            );
+            }else {
+                $volver=array("controller" => $_REQUEST["controller"],
+                                "action" => "editar",
+                                "clave" => "id",
+                                "valor" => $_REQUEST["id"]
+        
+                            );
+            }
+
 		$page=1;
 		$filtro=null;
 		$allprograms=$programa->getAll("id","ASC",$programa->pagelimit,($page-1)*$programa->pagelimit,$filtro);
@@ -97,32 +117,49 @@ class ProgramaController extends ControladorBase{
                  "allprograms"=>$allprograms,
 		         "program"=>$program,
                  "volver"=>$volver,
-                 "operacion"=>"editar"
+                 "operacion"=>"editar",
+                 "totalmensajes" => $totalmensajes
         ));
     }
     public function nuevo() {
         $programa=new Programa();
-        $programa=new Programa();
-        if (isset($_REQUEST["volvercontroller"])) {
-               $volver=array("controller" => $_REQUEST["volvercontroller"],
+        $conversaciones = new Conversaciones();
+
+        $totalmensajes = $conversaciones->NoLeidos($_SESSION["id"]);
+
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                         "action" => $_REQUEST["volveraction"]
+        
+                        );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                $volver=array("controller" => $_REQUEST["volvercontroller"],
                             "action" => $_REQUEST["volveraction"],
-							"clave" => $_REQUEST["volverclave"],
+                            "clave" => $_REQUEST["volverclave"],
                             "valor" => $_REQUEST["volvervalor"]
-                           );
-        }
-        else {
-               $volver=array("controller" => $_REQUEST["controller"],
-                             "action" => "index"
-                           );
-       }
+                            );
+            }else {
+                $volver=array("controller" => $_REQUEST["controller"],
+                                "action" => "index"
+        
+                            );
+            }
+
         $this->cargarVista("programa/single",array(
                  "volver"=>$volver,
-                 "operacion"=>"nuevo"
+                 "operacion"=>"nuevo",
+                 "totalmensajes" => $totalmensajes
         ));
     }
 
     public function actualizar() {
         if(isset($_REQUEST["id"])){
+
+            $f = fopen("actividad.txt", "a");
+            fwrite($f, "Programa Actualizar ". $_SESSION["nombre"]. " ".date("j F Y h:i:sa"). " ".$_REQUEST["id"] . "\n");
+            fclose($f);
+
+
             $formatter=new Formatter();
             $programa=new Programa();
             $programa->setId($_REQUEST["id"]);
@@ -130,24 +167,32 @@ class ProgramaController extends ControladorBase{
             $programa->setCategoria(($_REQUEST["categoria"]!='')?$_REQUEST["categoria"]:null);
             $save=$programa->updateById();
         }
-        if (isset($_REQUEST["volvercontroller"])) {
-              $volver=array("controller" => $_REQUEST["volvercontroller"],
-              "action" => $_REQUEST["volveraction"],
-              "clave" => $_REQUEST["volverclave"],
-              "valor" => $_REQUEST["volvervalor"]
-                   );
-        }
-        else {
-             $volver=array("controller" => $_REQUEST["controller"],
-             "action" => "index"
-              );
-        }
+
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                         "action" => $_REQUEST["volveraction"]
+        
+                        );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                $volver=array("controller" => $_REQUEST["volvercontroller"],
+                            "action" => $_REQUEST["volveraction"],
+                            "clave" => $_REQUEST["volverclave"],
+                            "valor" => $_REQUEST["volvervalor"]
+                            );
+            }else {
+                $volver=array("controller" => $_REQUEST["controller"],
+                                "action" => "index"
+        
+                            );
+            }
+
        $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
 
     }
 
     public function crear(){
         if(isset($_REQUEST["nombre"])){
+            
             $formatter=new Formatter();
              
             //Creamos un programa
@@ -156,45 +201,69 @@ class ProgramaController extends ControladorBase{
             $programa->setNombre(($_REQUEST["nombre"]!='')?($_REQUEST["nombre"]):null);
             $programa->setCategoria(($_REQUEST["categoria"]!='')?$_REQUEST["categoria"]:null);
             $id=$programa->save();
+
+            $f = fopen("actividad.txt", "a");
+            fwrite($f, "Programa Crear ". $_SESSION["nombre"]. " ".date("j F Y h:i:sa"). " ".$id . "\n");
+            fclose($f);
         }
-        if (isset($_REQUEST["volvercontroller"])) {
-              $volver=array("controller" => $_REQUEST["volvercontroller"],
-			   "action" => $_REQUEST["volveraction"],
-               "clave" => $_REQUEST["volverclave"],
-               "valor" => $_REQUEST["volvervalor"]
-                   );
-        }
-        else {
-             $volver=array("controller" => $_REQUEST["controller"],
-			  "action" => "index",
-           // "action" => "editar",
-              "clave" => "id",
-              "valor" => $id
-              );
-        }
+
+        if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                         "action" => $_REQUEST["volveraction"],
+                         "clave" => "id",
+                        "valor" => $id
+        
+                        );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                $volver=array("controller" => $_REQUEST["volvercontroller"],
+                            "action" => $_REQUEST["volveraction"],
+                            "clave" => $_REQUEST["volverclave"],
+                            "valor" => $_REQUEST["volvervalor"]
+                            );
+            }else {
+                $volver=array("controller" => $_REQUEST["controller"],
+                            "action" => "index",
+                        // "action" => "editar",
+                            "clave" => "id",
+                            "valor" => $id
+        
+                            );
+            }
+
 		$this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
 
     }
      
     public function borrar(){
-        if(isset($_REQUEST["id"])){ 
+        if(isset($_REQUEST["id"])){
+
+            $f = fopen("actividad.txt", "a");
+            fwrite($f, "Programa Borrar ". $_SESSION["nombre"]. " ".date("j F Y h:i:sa"). " ".$_REQUEST["id"] . "\n");
+            fclose($f);
+
             $id=(int)$_REQUEST["id"];
             $programa=new Programa();
              
             $programa->deleteById($id); 
         }
-         if (isset($_REQUEST["volvercontroller"])) {
-               $volver=array("controller" => $_REQUEST["volvercontroller"],
-                    "action" => $_REQUEST["volveraction"],
-                    "clave" => $_REQUEST["volverclave"],
-                    "valor" => $_REQUEST["volvervalor"]
-                     );
-         }
-         else {
+
+         if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
+            $volver=array("controller" => $_REQUEST["volvercontroller"],
+                         "action" => $_REQUEST["volveraction"]
+        
+                        );
+            }else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
+                $volver=array("controller" => $_REQUEST["volvercontroller"],
+                            "action" => $_REQUEST["volveraction"],
+                            "clave" => $_REQUEST["volverclave"],
+                            "valor" => $_REQUEST["volvervalor"]
+                            );
+            }else {
                 $volver=array("controller" => $_REQUEST["controller"],
-                "action" => "index"
-                 );
-       }
+                                "action" => "index"
+        
+                            );
+            }
 
         $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
     }

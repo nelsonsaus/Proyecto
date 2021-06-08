@@ -1,107 +1,180 @@
 <!DOCTYPE html>
+<html lang="en">
 <html>
    <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <title>Productividad - Trabajador - index</title>
-      <!-- Tell the browser to be responsive to screen width -->
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <!-- Font Awesome -->
-      <link rel="stylesheet" href="view/plugins/fontawesome-free/css/all.min.css">
-      <!-- Ionicons -->
-      <link rel="stylesheet" href="view/css/ionicons.min.css">
-      <!-- overlayScrollbars -->
-      <link rel="stylesheet" href="view/css/adminlte.min.css">
-      <!-- Google Font: Source Sans Pro -->
-      <link href="view/css/googlefonts.css" rel="stylesheet">
-      <!-- Google Font: Source Sans Pro -->
-      <link href="view/css/xtrastyles.css" rel="stylesheet">
-      <link rel="apple-touch-icon" sizes="180x180" href="view/imagenes/apple-icon.png">
-      <link rel="icon" type="image/png" sizes="32x32" href="view/imagenes/favicon-32x32.png">
-      <link rel="icon" type="image/png" sizes="16x16" href="view/imagenes/favicon-16x16.png">
-      <link rel="shortcut icon" href="view/imagenes/favicon.ico">
-      
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="stylesheet" href="view/plugins/fontawesome-free/css/all.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+
+        <title>Productividad - Trabajador - index</title>
    </head>
-   <body class="hold-transition sidebar-mini">
-      <!-- Site wrapper -->
-      <div class="wrapper">
-         <!-- Navbar -->
-         <?php require_once 'view/comun/leftnavbar.php'; ?>
-         <!-- /.navbar -->
-         <!-- Main Sidebar Container -->
-         <?php require_once 'view/comun/sidebar.php'; ?>
-         <!-- Content Wrapper. Contains page content -->
-         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-            <section>
-               <div class="row wrapper white-bg page-heading">
-                  <div class="col-lg-12">
-                     <h3 style="color: #2F4050; margin-bottom: 18px; margin-top: 18px"> Trabajadores</h3>
-                  </div>
-               </div>
-               <div class="wrapper wrapper-content animated fadeIn">
-                  <?php   
-                     if (isset($_SESSION['errMsg'])) {
-                          ?>
-                  <div class="alert <?php echo  $_SESSION['errMsg']['color'];  ?>" id="emsg">
-                     <span id="emsgbody"> <?php echo  $_SESSION['errMsg']['error'];  ?> </span>
-                  </div>
-                  <?php 
-                     unset($_SESSION['errMsg']);
-                                                           } 
-                                                           ?>
-                  <div class="row">
-                     <div class="col-md-12">
-                        <?php 
-						   $entidad="trabajador";
-                           require_once "comun/Formatter.php";
-                           $formatter=new Formatter();
-                     
-                           ?>
-                           
-                           
-                <div class="card">
-              <div class="card-header">
-                    <div  class="col-sm-12 col-md-6">
-                       <div class="panel-body">
-                        <a href="<?php echo $helper->url($entidad,"nuevo"); ?>" class="btn btn-primary"><i class="fa fa-plus"></i> Nuevo Trabajador</a>
-                       </div>
-                    </div>
-	
-					
-                    <div  class="col-sm-12 col-md-6">
-					  
-                      <div id="filtro_servcios" >
-                      </div>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
 
-                    </div>
-			
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-              
-                <table id="trabajadores" class="table table-bordered table-hover table-striped" data-page-size="50">
-                  <thead>
-                            <tr>
-                                <th>N.I.F</th>
-                                <th>Nombre</th>
-                                <th>Apellidos</th>
-                                <th>ldap</th>
-                                <th>Telefono</th>
-                                <th>Servicio</th>
-								<th>Act</th>
-                                <th>categoria</th>
-                                <th class="text-right" data-sort-ignore="true" width="150"></th>
-                            </tr>
-                            </thead>
-                            <tbody>
+        @media only screen and (max-width: 767px) {
 
-                            <?php 
+            #selectcontenedor{
+
+                height:550px;
+
+            }
+
+            #impcalcu{
+
+                text-align: center;
+                
+            }
+
+
+        }
+
+
+
+        @media only screen and (min-width: 768px) and (max-width: 1161px) {
+
+            #selectcontenedor{
+
+                height:300px;
+
+            }
+
+            #impcalcu input{
+                margin-left:38px;
+            }
+
+        }
+
+        @media only screen and (min-width: 1161px) {
+
+            #selectcontenedor{
+
+                height:200px;
+
+            }
+
+            #impcalcu input{
+                margin-left:38px;
+            }
+
+        }
+
+
+        @media only screen and (min-width: 614px) and (max-width: 940px) {
+
+            #botonesdiv{
+
+                height:220px;
+
+            }
+
+
+        }
+
+
+
+        @media only screen and (min-width: 940px) {
+
+            #botonesdiv{
+
+                height:120px;
+
+            }
+
+
+        }
+
+
+
+
+
+
+        .elementoside:hover{
+            background-color:black;
+        }
+
+
+        .enlacesside:hover{
+            background-color:#2b2b2b;
+        }
+
+
+
+
+
+
+    </style>
+</head>
+<body style="background-color: #2a3a54;">
+
+    <?php require_once 'view/comun/leftnavbar.php'; ?>
+    <?php require_once 'view/comun/sidebar.php'; ?>
+
+
+    <?php   
+        if (isset($_SESSION['errMsg'])) {
+    ?>
+        <div style="padding-top:100px; text-align:center;" class="alert <?php echo  $_SESSION['errMsg']['color'];  ?>" id="emsg">
+            <span id="emsgbody"> <?php echo  $_SESSION['errMsg']['error'];  ?> </span>
+        </div>
+    <?php 
+            unset($_SESSION['errMsg']);
+        } 
+    ?>
+
+
+  <?php 
+		$entidad="trabajador";
+    require_once "comun/Formatter.php";
+    $formatter=new Formatter();
+?>
+
+
+
+    <div id="contenedortodo" class="row" style="width:90%; float:right;">
+
+        
+        <div id="selectcontenedor" style="height:50px; background-color: #fafafa; width:80%; margin:auto; margin-top:150px; border-radius:30px;" class="shadow-lg">
+            
+            <div class="row">
+
+              <a style="margin:auto; margin-top:7px; width:50%;" href="<?php echo $helper->url($entidad,"nuevo"); ?>" class="btn btn-primary"><i class="fa fa-plus"></i> Nuevo Trabajador</a>
+
+            </div>
+
+        </div>
+
+
+
+        <div id="tablacontenedor" class="table-responsive" style="background-color: #fafafa; width:93%; margin:auto; margin-top:50px; margin-bottom:80px; border-radius:15px; margin-left:70px;" class="shadow-lg">
+          <table id="trabajadores" class="table table-bordered table-hover table-striped" data-page-size="50">
+                <div style="height:70px; width:100%; background-color:#360910;" class="text-center">
+                  <h4 style="color:white; font-style:italic; padding:15px;">TABLA TRABAJADORES</h4>
+                </div>
+                <thead style="padding:0;height:40px; width:100%;">
+                        <tr style="height:70px;font-size:17px;color:black;">
+                            <th scope="col" style="padding-bottom:25px; padding-left:25px">N.I.F</th>
+                            <th scope="col" style="padding-bottom:25px;">Nombre</th>
+                            <th scope="col" style="padding-bottom:25px;">Apellidos</th>
+                            <th scope="col" style="padding-bottom:25px;">ldap</th>
+                            <th scope="col" style="padding-bottom:25px;">Telefono</th>
+                            <th scope="col" style="padding-bottom:25px;">Servicio</th>
+								            <th scope="col" style="padding-bottom:25px;">Act</th>
+                            <th  scope="col" style="padding-bottom:25px;">categoria</th>
+                            <th class="text-right" data-sort-ignore="true" width="150"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    <?php 
                             if(!isset($filtro)){
                                 if($todos && !$activos && !$noactivos){
                                     foreach($alltrabajadores as $worker) { //recorremos el array de objetos y obtenemos el valor de las propiedades ?>
                                     <tr> 
-                                        <td><?php echo ($worker->nif)?>  </td>
+                                        <th><?php echo ($worker->nif)?>  </th>
                                         <td><?php echo ($worker->nombre); ?> </td>
                                         <td><?php echo ($worker->apellidos); ?> </td>
                                         <td><?php 
@@ -115,7 +188,7 @@
                                         <td class="text-right">
                                             <a href="<?php echo $helper->url($entidad,"visualizar"); ?>&nif=<?php echo $worker->nif; ?>"  class="btn  btn-secondary btn-xs"><i class="fa fa-search"></i> </a>
 
-                                            <a href="<?php echo $helper->url($entidad,"editar"); ?>&nif=<?php echo $worker->nif; ?>"  class="btn btn-editar btn-xs"><i class="fas fa-pencil-alt"></i> </a>
+                                            <a href="<?php echo $helper->url($entidad,"editar"); ?>&nif=<?php echo $worker->nif; ?>"  class="btn btn-success btn-xs"><i class="fas fa-pencil-alt"></i> </a>
 
                                             <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-href="<?php echo $helper->url($entidad,"borrar"); ?>&nif=<?php echo $worker->nif; ?>" data-target="#borrar-confirm" ><i class="fas fa-trash"></i></button>
                                 
@@ -126,7 +199,7 @@
                                     foreach($alltrabajadores as $worker) { //recorremos el array de objetos y obtenemos el valor de las propiedades ?>
                                     <?php if($worker->activo=='Si'){ ?>
                                     <tr> 
-                                        <td><?php echo ($worker->nif)?>  </td>
+                                        <th><?php echo ($worker->nif)?>  </th>
                                         <td><?php echo ($worker->nombre); ?> </td>
                                         <td><?php echo ($worker->apellidos); ?> </td>
                                         <td><?php 
@@ -140,7 +213,7 @@
                                         <td class="text-right">
                                             <a href="<?php echo $helper->url($entidad,"visualizar"); ?>&nif=<?php echo $worker->nif; ?>"  class="btn  btn-secondary btn-xs"><i class="fa fa-search"></i> </a>
 
-                                            <a href="<?php echo $helper->url($entidad,"editar"); ?>&nif=<?php echo $worker->nif; ?>"  class="btn btn-editar btn-xs"><i class="fas fa-pencil-alt"></i> </a>
+                                            <a href="<?php echo $helper->url($entidad,"editar"); ?>&nif=<?php echo $worker->nif; ?>"  class="btn btn-success btn-xs"><i class="fas fa-pencil-alt"></i> </a>
 
                                             <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-href="<?php echo $helper->url($entidad,"borrar"); ?>&nif=<?php echo $worker->nif; ?>" data-target="#borrar-confirm" ><i class="fas fa-trash"></i></button>
                                 
@@ -152,7 +225,7 @@
                                     foreach($alltrabajadores as $worker) { //recorremos el array de objetos y obtenemos el valor de las propiedades ?>
                                     <?php if($worker->activo=='No'){ ?>
                                     <tr> 
-                                        <td><?php echo ($worker->nif)?>  </td>
+                                        <th><?php echo ($worker->nif)?>  </th>
                                         <td><?php echo ($worker->nombre); ?> </td>
                                         <td><?php echo ($worker->apellidos); ?> </td>
                                         <td><?php 
@@ -166,7 +239,7 @@
                                         <td class="text-right">
                                             <a href="<?php echo $helper->url($entidad,"visualizar"); ?>&nif=<?php echo $worker->nif; ?>"  class="btn  btn-secondary btn-xs"><i class="fa fa-search"></i> </a>
 
-                                            <a href="<?php echo $helper->url($entidad,"editar"); ?>&nif=<?php echo $worker->nif; ?>"  class="btn btn-editar btn-xs"><i class="fas fa-pencil-alt"></i> </a>
+                                            <a href="<?php echo $helper->url($entidad,"editar"); ?>&nif=<?php echo $worker->nif; ?>"  class="btn btn-success btn-xs"><i class="fas fa-pencil-alt"></i> </a>
                                             
                                             <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-href="<?php echo $helper->url($entidad,"borrar"); ?>&nif=<?php echo $worker->nif; ?>" data-target="#borrar-confirm" ><i class="fas fa-trash"></i></button>
                                         </td>
@@ -212,63 +285,36 @@
                   </tr>
                   </tfoot>
                 </table>
-                </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
         </div>
-        <!-- /.row -->
-      </div>
-       </div>
-      <!-- /.container-fluid -->
-      <div class="modal fade" id="borrar-confirm">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <h4>Borrar Registro</h4>
-                        <p>Confirmeee que quiere borrar un servicio para este trabajador</p>
-                    </div>
-                <div class="modal-footer justify-content-between">
-                    <a class="btn btn-danger btn-ok">Borrar</a>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                </div>
-            </div>
-        <!-- /.modal-content -->
-      </div>
-        <!-- /.modal-dialog -->
-    </div>
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-      <!-- /.content-wrapper -->
-      <?php require_once 'view/comun/footer.php'; ?>
-      <!-- Control Sidebar -->
-      <aside class="control-sidebar control-sidebar-dark">
-         <!-- Control sidebar content goes here -->
-      </aside>
-      <!-- /.control-sidebar -->
-      </div>
-      <!-- ./wrapper -->
-      <!-- jQuery -->
-      <script src="view/plugins/jquery/jquery.min.js"></script>
-      <!-- Bootstrap 4 -->
-      <script src="view/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <!-- AdminLTE App -->
-      <script src="view/js/adminlte.min.js"></script>
-      <!-- AdminLTE for demo purposes -->
-      <script src="view/dist/js/demo.js"></script>
-      <!-- DataTables -->
-      <script src="view/plugins/datatables/jquery.dataTables.min.js"></script>
-      <script src="view/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-      <script src="view/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-      <script src="view/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-  
-     
 
-<script>
+
+
+
+            <div class="modal fade" id="borrar-confirm">
+              <div class="modal-dialog modal-sm">
+                  <div class="modal-content">
+                      <div class="modal-body">
+                          <h4>Borrar Registro</h4>
+                          <p>Confirme que quiere borrar a este trabajador</p>
+                      </div>
+                      <div class="modal-footer justify-content-between">
+                          <a class="btn btn-danger btn-ok">Borrar</a>
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+    </div>
+
+
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+      <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+      <script src="view/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
+
+      <script>
 function showResult() {
 	var table = $('#trabajadores').DataTable();
 
@@ -301,7 +347,7 @@ $(document).ready(function() {
       "autoWidth": true,
       "responsive": false,
 	    initComplete: function () {
-            this.api().columns([5]).every( function () {
+            this.api().columns([5, 7]).every( function () {
                 var column = this;
                 var select = $('<select><option style="font-weight:bold" value=""> </option></select>')
 					.appendTo( $(column.footer()).empty() )
@@ -355,6 +401,81 @@ $(document).ready(function() {
          })  
 </script>
 
+<script>
 
-   </body>
+var contadordelside = 0;
+var contadordelside2 = 0;
+var contadordisplayside = 1;
+
+function sideclick(){
+
+    contadordelside++;
+
+
+    let div = document.getElementById("divside");
+
+
+    if(contadordelside%2==0){
+        div.style="display:none;"
+    }else{
+        div.style="display:block; height:130px; width:100%;margin:auto;text-align:center;";
+    }
+
+}
+
+
+function sideclick2(){
+
+    contadordelside2++;
+
+
+    let div = document.getElementById("divside2");
+
+
+    let sidebar = document.getElementsByClassName("sidebar")[0];
+
+    console.log(sidebar);
+
+
+
+    if(contadordelside2%2==0){
+        div.style="display:none;"
+        sidebar.style="";
+    }else{
+        div.style="display:block; height:130px; width:100%;margin:auto;text-align:center;";
+        sidebar.style="overflow-x:hidden;";
+    }
+
+}
+
+
+function hamburguer(){
+
+    contadordisplayside++;
+
+    let side = document.getElementById("sidebar");
+
+    let contenedortodo = document.getElementById("contenedortodo");
+
+    let topbar = document.getElementById("topbar");
+
+    if(contadordisplayside%2==0){
+        side.style="display:none;";
+        contenedortodo.style="margin-left:0px;";
+        topbar.style="position:fixed;z-index:22;background-color:#1c1c1c;margin-left:0%;height:60px;width:100%;";
+    }else{
+        side.style="position:fixed;top:0%;z-index:60;margin-top:0; width:15%; height:710px; overflow:hidden; background-color:#1c1c1c;";
+        contenedortodo.style="width:90%; float:right;";
+        topbar.style="position:fixed;z-index:22;background-color:#1c1c1c;margin-left:15%;height:60px;width:100%;";
+        
+    }
+
+
+}
+
+
+
+</script>
+
+</body>
 </html>

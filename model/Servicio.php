@@ -1,9 +1,4 @@
 <?php
-
-
-use Clases\EntidadBase;
-use Clases\CondicionFiltro;
-
 class Servicio extends EntidadBase{
     private $table;
     private $model;

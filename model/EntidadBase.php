@@ -1,11 +1,5 @@
 <?php
-
-namespace Clases;
-
-
-use PDO;
-use PDOException;
-
+ 
 class EntidadBase{
     private $table;
     private $conectar;
@@ -176,13 +170,13 @@ class EntidadBase{
     }
 
 		public function getByNom($nombre,$clave){
-	$stmt = $this->db()->prepare("SELECT * FROM $this->table WHERE $clave=:nombre");
-        $stmt->bindValue(':id', $this->id);
+	$stmt = $this->db()->prepare("SELECT * FROM $this->table WHERE $clave=$nombre");
+        $stmt->bindValue(':id',$id);
 	$stmt->execute();
 
         $resultSet=$stmt->fetchAll(PDO::FETCH_CLASS, $this->model);
 	foreach ($resultSet as $r) {
-		if ($r->getId() == $this->id ) {
+		if ($r->getId() == $id ) {
 			return $r;
 		}
 	}
@@ -208,7 +202,7 @@ class EntidadBase{
         $stmt->bindValue(':value',$value);
 
 	$stmt->execute();
-        $resultSet=$stmt->fetchAll(PDO::FETCH_CLASS,$this->table);
+        $resultSet=$stmt->fetchAll(PDO::FETCH_CLASS,$this->$table);
 	return $resultSet;
     }
  
@@ -230,11 +224,11 @@ class EntidadBase{
             $stmt=$this->db()->prepare("DELETE FROM $this->table WHERE id=:id");	
 			$stmt->bindValue(':id',$id_servicio);
             $_SESSION['errMsg']['error'] = "Se ha borrado bien el registro";
-			$_SESSION['errMsg']['color']= "alerta-correcto";
+			$_SESSION['errMsg']['color']= "alert-success";
 			return $stmt->execute();
 		} catch(PDOException $e) {
             $_SESSION['errMsg']['error'] = "No se ha podido guardar el registro";
-			$_SESSION['errMsg']['color']= "alerta-error";
+			$_SESSION['errMsg']['color']= "alert-danger";
 		    return $e->getCode();
         }
     }

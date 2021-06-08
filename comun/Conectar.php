@@ -1,8 +1,4 @@
 <?php
-namespace Clases;
-
-use PDO;
-use PDOException;
 class Conectar{
     private $driver;
     private $host, $user, $pass, $database, $charset;

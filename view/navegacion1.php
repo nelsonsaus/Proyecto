@@ -26,6 +26,7 @@
             "trabajador" => "Trabajador",
             "programa" => "Programa",
             "servicio" => "Servicio",
+            "puesto" => "Puesto",
              );
 
             foreach ($paginas as $controller => $nombre) { ?>

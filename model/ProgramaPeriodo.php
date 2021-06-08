@@ -1,6 +1,4 @@
 <?php
-use Clases\EntidadBase;
-use Clases\CondicionFiltro;
 class ProgramaPeriodo extends EntidadBase{
     private $table;
     private $model;
@@ -138,27 +136,19 @@ class ProgramaPeriodo extends EntidadBase{
           
         $resultSet=$stmt->fetchAll(PDO::FETCH_CLASS, $this->model);
 		return $resultSet;
-    }
-    
-    
-    public function rellenar($cant, $ids_periodos, $ids_programas){
-		
-        $faker = \Faker\Factory::create('es_ES');
-        for ($i = 0; $i < $cant; $i++) {
-            $id_periodo = $faker->randomElement($ids_periodos);
-            $id_programa = $faker->randomElement($ids_programas);
-            $presupuesto = $faker->numberBetween($min=10000, $max=40000);
-            $stmt=$this->db()->prepare("INSERT INTO programas_periodos (id_periodo,id_programa,presupuesto)
-            VALUES(:id_periodo,:id_programa,:presupuesto);");
-            $stmt->bindValue(':id_periodo', $id_periodo);
-            $stmt->bindValue(':id_programa', $id_programa);
-            $stmt->bindValue(':presupuesto', $presupuesto);
-      
- 
-        	$stmt->execute();
-            
-            
-        }
+    }	
+
+
+
+
+    //metodo para devolver los registros que tengan ese periodo y ese programa
+    public function getByPerPro($per, $pro){
+        $stmt=$this->db()->prepare("SELECT * FROM programas_periodos WHERE id_periodo='$per' AND id_programa='$pro'");
+
+        $stmt->execute();
+        
+        $resultado=$stmt->fetchAll(PDO::FETCH_CLASS, $this->model);
+	    return  $resultado;
     }
 	
 	  
