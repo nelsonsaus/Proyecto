@@ -215,11 +215,14 @@
                                 <?php } 
                             }?>
                         </select>
+
+                    </form>
                 </div>
 
                 <div class="col-md-2" style="margin:10px; margin-top:15px;">
                     <h5 class="text-center">Programa</h5>
                     <form action="<?php echo $helper->url($entidad,"index"); ?>" method="post">
+                    <input type="hidden" name="filtro_periodo" value="<?php echo $periodo_seleccionado->id;?>">
 
                         <select id="idfiltro-prog" name="filtro-programa" class="form-control" style="margin:auto; border-radius: 30px; width:100%;" onchange="this.form.submit()">
                             <option value=""></option>
@@ -234,6 +237,8 @@
                                     <?php } ?>
                                 <?php  }?>
                         </select>
+
+                    </form>
                 </div>
 
 

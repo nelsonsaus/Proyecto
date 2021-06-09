@@ -207,4 +207,12 @@ class Conversaciones extends EntidadBase{
 
     }
 
+
+
+    public function borratotalreciente($id_emisor, $id_receptor){
+        $stmt = $this->db()->prepare("DELETE FROM conversaciones where (receptor='$id_emisor' OR receptor='$id_receptor') AND (emisor='$id_emisor' OR emisor='$id_receptor');");
+
+        $stmt->execute();
+    }
+
 }

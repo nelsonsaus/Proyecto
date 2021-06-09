@@ -233,5 +233,31 @@
 
         }
 
+
+
+      
+
+
+
+        public function borrartotalrec(){
+
+            
+
+            $conversacion = new Conversaciones();
+
+            $id_emisor=$_SESSION["id"];
+
+            $conversacion->borratotalreciente($id_emisor, $_REQUEST["id"]);
+
+            $volver=array("controller" => $_REQUEST["controller"],
+                                "action" => "index",
+                                "clave" => "index&recientes",
+                                "valor" => "."
+                            );
+
+            $this->redirect($volver["controller"],$volver["action"], $volver["clave"], $volver["valor"]);
+
+        }
+
     }
 ?>

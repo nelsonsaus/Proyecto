@@ -236,7 +236,7 @@
                                 if($todosrecientes[$i]->idusu==$ids){
                                     ?>
                                     <div style='width:100%;height:20%;border-bottom:2px solid #1e6e1e;position:relative;' id='principal-<?php echo $todosrecientes[$i]->idusu; ?>' onclick='chatrecientes(event)'><img src="<?php echo $todosrecientes[$i]->imagenusu; ?>" style="width:20%; height:80%;border-radius:70px; margin-left:10px; margin-top:5px;"><span style="color:white; margin-left:30px;" class="font-weight-bold"><?php echo $todosrecientes[$i]->nombreusu;?></span><?php if($todosrecientes[$i]->noleidos!=0){ ?><span style="position:absolute;top:20%;left:55%; color:white; background-color:red; width:7%; height:25px; text-align:center; border-radius:10px;"><?php echo $todosrecientes[$i]->noleidos; ?></span><?php } ?><span style="position:absolute;top:50%;left:34%;color:gray;"><?php echo $todosrecientes[$i]->correousu; ?></span>
-                                    <button type="button" style="z-index:30;position:absolute;top:10%;left:85%;width:40px;height:30px; padding-top:0px;border-radius:20px;" class="btn btn-danger" data-toggle="modal" data-href="<?php echo $helper->url("conversaciones","borrarchat"); ?>&id=<?php echo $todosrecientes[$i]->id; ?>" data-target="#borrar-confirm" ><i class="fas fa-trash"></i></button></div>
+                                    <a style="z-index:30;position:absolute;top:10%;left:85%;width:40px;height:30px; padding-top:0px;border-radius:20px;" class="btn btn-danger" href="<?php echo $helper->url("conversaciones","borrartotalrec"); ?>&id=<?php echo $todosrecientes[$i]->idusu; ?>" ><i class="fas fa-trash"></i></a></div>
                                     <?php
                                     $i=1000;
                                 }
@@ -286,7 +286,6 @@
                                 ?>
                                 
                                 
-                                <button type="button" style="position:absolute;top:100%;left:35%;width:30%;height:8%; padding-top:0px;border-radius:20px;" class="btn btn-danger" data-toggle="modal" data-href="<?php echo $helper->url("conversaciones","borrarimportante"); ?>&id=<?php echo $conver->id; ?>" data-target="#borrar-confirm" ><i class="fas fa-trash"></i></button></div>
 
                             </div>
 
