@@ -705,24 +705,7 @@ public function actualizar2(){
 
 
 
-	if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
-		$volver=array("controller" => $_REQUEST["volvercontroller"],
-					 "action" => $_REQUEST["volveraction"]
-	
-					);
-		}else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
-			$volver=array("controller" => $_REQUEST["volvercontroller"],
-						"action" => $_REQUEST["volveraction"],
-						"clave" => $_REQUEST["volverclave"],
-						"valor" => $_REQUEST["volvervalor"]
-						);
-		}else {
-			$volver=array("controller" => $_REQUEST["controller"],
-				   "action" => "index"
-			);
-		}
-  
-   $this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
+	$this->redirect("productividad", "index");
 
 }
 
@@ -818,26 +801,10 @@ public function crear(){
 		
 
 
-	if(isset($_REQUEST["volvercontroller"]) && !isset($_REQUEST["volverclave"])) {
-		$volver=array("controller" => $_REQUEST["volvercontroller"],
-					 "action" => $_REQUEST["volveraction"]
-	
-					);
-		}else if (isset($_REQUEST["volvercontroller"]) && isset($_REQUEST["volverclave"])) {
-			$volver=array("controller" => $_REQUEST["volvercontroller"],
-						"action" => $_REQUEST["volveraction"],
-						"clave" => $_REQUEST["volverclave"],
-						"valor" => $_REQUEST["volvervalor"]
-						);
-		}else {
-			$volver=array("controller" => $_REQUEST["controller"],
-		 		"action" => "index"
-		  	);
-		}
 
 
 
-	$this->redirect($volver["controller"],$volver["action"],$volver["clave"],$volver["valor"]);
+	$this->redirect("productividad", "index");
 
 }
  
