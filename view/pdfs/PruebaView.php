@@ -251,7 +251,7 @@
 
     function cuerpo($consejeria, $organismo, $primero, $segundo, $tercero, $firma, $cargo, $nombre){
         $this->AddPage();
-        $this->Image("img/logojun.png", 50,5,40,20);
+        $this->Image("view/imagenes/logojun.png", 50,5,40,20);
         $this->SetFont('Arial','B', 10);
         $this->SetTextColor(6,117,50);
         $this->Cell(100);
